@@ -1,0 +1,349 @@
+ 
+ 
+2025 
+ 
+ 
+Evaluación Parcial Nº 1 
+Instrucciones y pauta de evaluación | Estudiante 
+ 
+Página 1 de 6 
+ 2025 
+Evaluación Parcial Nº1  
+Diseñando un plan de pruebas seguro, legal y normativo 
+Instrucciones y pauta de evaluación  
+Estudiante 
+Sigla 
+Nombre Asignatura 
+Tiempo Asignado 
+% Ponderación 
+ISY1102 
+Seguridad y Calidad en el Desarrollo de Software 
+3 horas pedagógicas 
+17% 
+ 
+1. Instrucciones generales  
+Descripción  
+ 
+Página 2 de 6 
+ 2025 
+▪ La Evaluación Parcial 1 corresponde a un encargo elaborado en grupos (máximo 3 integrantes), en el cual las/los estudiantes realizan el 
+diseño de un plan de pruebas que cumpla con aspectos de calidad de software, seguridad, estándares, normativas y aspectos legales basados 
+en el caso semestral que será proporcionado. 
+▪ Esta evaluación medirá los siguientes Indicadores de Logro: 
+o IL 1.1 Reconoce el rol de la calidad del software en el desarrollo de productos, valorando su contribución al éxito del proyecto y 
+comprendiendo el cumplimiento legal y normativo como un componente esencial del proceso de desarrollo.  
+o IL 1.2 Distingue las diferencias entre pruebas funcionales y no funcionales, analizando su relevancia en el aseguramiento de la calidad 
+del software e integrando los criterios legales y normativos que sustentan su aplicación.  
+o IL 1.3 Identifica pruebas de usabilidad, rendimiento y compatibilidad, reconociendo su impacto en la calidad, seguridad y conformidad 
+normativa del software, y su aporte a la accesibilidad, confiabilidad y ética del producto final.  
+o IL 1.4 Diseña un plan de pruebas que describa la estrategia general, los objetivos, los recursos y el cronograma de ejecución, 
+asegurando coherencia con los requerimientos del proyecto y las normativas vigentes.  
+o IL 1.5 Evalúa la consistencia y cobertura del plan de pruebas propuesto, verificando su alineación con los objetivos del proyecto, los 
+estándares de calidad y los marcos legales y regulatorios aplicables. 
+ 
+▪ La distribución de los porcentajes en esta evaluación es la siguiente:   
+ 
+Evaluación 
+Tipo de situación 
+evaluativa 
+Distribución de porcentajes 
+Individual/Grupal 
+Evaluación Parcial Nº1 
+(17%) 
+Encargo 
+100% 
+Grupal 
+Total 
+100% 
+ 
+ 
+▪ La evaluación está segmentada en: 
+o Un encargo sin presentación, en donde los alumnos en grupos (máximo 3 integrantes) deberán desarrollar un encargo basado en 
+un caso semestral cargado en AVA, el cual consiste en un plan de pruebas que debe cumplir con aspectos de calidad con aspectos 
+de calidad de software, seguridad, estándares, normativas y aspectos legales. 
+o Un cuestionario en plataforma AVA. 
+▪ El tiempo asignado para la elaboración del encargo grupal corresponde a 3 horas pedagógicas y 1 hora pedagógica para el cuestionario 
+realizado de manera individual. 
+ 
+Instrucciones específicas de la Evaluación: 
+ 
+Página 3 de 6 
+ 2025 
+ 
+Ítem I: Consideraciones para el encargo: 
+ 
+El informe (o entregable) debe incluir los siguientes apartados:  
+1. Introducción (contexto y propósito del plan) 
+2. Criterios de calidad, seguridad y cumplimiento normativo a satisfacer en el caso. 
+3. Tipos de pruebas y su justificación.  
+4. Estrategia de pruebas y justificación.  
+5. Recursos necesarios (humanos, técnicos y de entorno).  
+6. Diseño de casos de prueba (al menos 5 casos de prueba representativos para los distintos tipos requerimientos definidos en el ERS). Cada 
+caso de prueba debe detallar:  
+6.1 ID del caso.  
+6.2 Descripción.  
+6.3 Requerimiento asociado (definido con código en ERS).  
+6.4 Datos de entrada (solo si aplica).  
+6.5 Resultado esperado.  
+6.6 Criterios de aceptación.  
+6.7 Tipo de prueba. 
+ 
+Los aspectos formales son: 
+• 
+Formato: el encargo se debe presentar en formato Word o PDF. 
+• 
+Medio de entrega: Subir el informe a la plataforma AVA en el plazo de entrega correspondiente al día del cuestionario. 
+ 
+Títulos fuente Arial 12. 
+ 
+Cuerpo Arial 11. 
+ 
+Interlineado 1,5. 
+ 
+Texto justificado. 
+ 
+Portada con nombre completo de cada integrante, carrera, sección, docente y fecha. 
+ 
+Redacción en lenguaje formal técnico. 
+Los materiales, herramientas o insumos que se requieren para realizar esta evaluación. 
+ 
+Página 4 de 6 
+ 2025 
+• 
+Documento de especificación de requerimientos de software del caso semestral entregado por el docente. 
+• 
+Computadores disponibles en taller de proyectos. 
+Ítem II: Consideraciones para el cuestionario: 
+• 
+El cuestionario está compuesto por 20 preguntas de selección única con corrección automática y 5 preguntas de desarrollo. 
+• 
+No se admite el uso de IA o recursos durante el cuestionario. 
+• 
+Los estudiantes solo podrán efectuar un intento en el cuestionario. 
+ 
+2. Pauta de Evaluación 
+Categoría 
+% logro 
+Descripción niveles de logro 
+Muy buen desempeño 
+100% 
+Demuestra un desempeño destacado, evidenciando el logro de todos los aspectos evaluados en el indicador.  
+Buen desempeño 
+80% 
+Demuestra un alto desempeño del indicador, presentando pequeñas omisiones, dificultades y/o errores. 
+ 
+Página 5 de 6 
+ 2025 
+Desempeño aceptable  
+60% 
+Demuestra un desempeño competente, evidenciando el logro de los elementos básicos del indicador, pero con 
+omisiones, dificultades o errores. 
+Desempeño incipiente  
+30% 
+Presenta importantes omisiones, dificultades o errores en el desempeño, que no permiten evidenciar los 
+elementos básicos del logro del indicador, por lo que no puede ser considerado competente. 
+Desempeño no logrado 
+0% 
+Presenta ausencia o incorrecto desempeño. 
+ 
+Indicador de Evaluación 
+Categorías de Respuesta 
+Ponderación 
+Indicador de 
+Evaluación 
+Muy buen desempeño 
+100% 
+Buen desempeño 
+80% 
+Desempeño 
+aceptable 
+60% 
+Desempeño 
+incipiente 
+30% 
+Desempeño 
+no logrado 
+0% 
+Dimensión: Encargo 
+IE1. Identifica la 
+importancia de la 
+calidad, la seguridad y 
+el cumplimiento legal 
+en el desarrollo de 
+software. 
+Identifica con claridad y 
+profundidad la 
+importancia de la calidad, 
+seguridad y cumplimiento 
+legal, integrando 
+ejemplos pertinentes y 
+lenguaje técnico 
+adecuado. 
+Identifica 
+correctamente los 
+conceptos principales, 
+con leves omisiones o 
+ejemplos limitados. 
+Menciona de 
+forma general los 
+conceptos, sin 
+análisis ni 
+ejemplos. 
+Presenta confusión o 
+errores conceptuales 
+sobre la relación 
+entre calidad, 
+seguridad y 
+legalidad. 
+No aborda los 
+conceptos de 
+calidad, 
+seguridad o 
+cumplimiento 
+legal. 
+15% 
+IE2. Clasifica tipos de 
+pruebas y su propósito 
+en el aseguramiento de 
+la calidad. 
+Clasifica y describe 
+correctamente todos los 
+tipos de prueba 
+(funcionales, no 
+funcionales, seguridad, 
+rendimiento, etc.), 
+justificando su propósito y 
+aplicación. 
+Clasifica y describe la 
+mayoría de los tipos 
+de prueba, con leves 
+omisiones o 
+justificación 
+superficial. 
+Clasifica algunos 
+tipos de prueba, 
+sin justificar 
+adecuadamente 
+su propósito. 
+Presenta errores o 
+confusión en la 
+clasificación y 
+propósito de las 
+pruebas. 
+No clasifica ni 
+describe los 
+tipos de 
+prueba. 
+20% 
+IE3. Relaciona los 
+distintos tipos de 
+pruebas no funcionales 
+con su propósito y 
+contexto de aplicación. 
+Diseña y documenta casos 
+representativos de 
+distintos tipos de pruebas 
+no funcionales, 
+definiendo criterios de 
+aceptación y propósito de 
+Incluye la mayoría de 
+los tipos de pruebas 
+no funcionales con 
+justificación parcial o 
+escasa profundidad. 
+Diseña casos 
+básicos de 
+pruebas no 
+funcionales, sin 
+detallar su 
+propósito o 
+contexto de uso. 
+Diseña casos 
+incompletos o con 
+errores significativos 
+en su aplicación. 
+No diseña ni 
+relaciona 
+casos de 
+pruebas no 
+funcionales. 
+20% 
+ 
+Página 6 de 6 
+ 2025 
+manera coherente con el 
+contexto. 
+IE4. Reconoce los 
+elementos que 
+componen un plan de 
+pruebas y su 
+vinculación con los 
+requerimientos y 
+normativas. 
+El plan presenta todos los 
+apartados solicitados 
+(introducción, alcance, 
+objetivos, estrategia, 
+recursos y cronograma) 
+con coherencia técnica, 
+vinculación a 
+requerimientos y 
+normativas vigentes. 
+El plan incluye la 
+mayoría de los 
+apartados, con leves 
+omisiones o vínculos 
+poco detallados. 
+El plan aborda los 
+elementos 
+básicos, pero sin 
+justificar su 
+relación con los 
+requerimientos o 
+normas. 
+El plan está 
+incompleto o con 
+escasa coherencia 
+entre los elementos. 
+No presenta 
+plan o este no 
+cumple con 
+los elementos 
+solicitados. 
+25% 
+IE5. Analiza la 
+cobertura, pertinencia 
+y coherencia del plan 
+de pruebas frente a 
+estándares técnicos y 
+legales. 
+Evalúa la coherencia y 
+cobertura del plan de 
+pruebas con respecto a 
+los requerimientos y 
+estándares, demostrando 
+análisis crítico y 
+justificación técnica. 
+Evidencia buena 
+coherencia general 
+con leves omisiones o 
+análisis superficial. 
+Analiza 
+parcialmente la 
+cobertura o 
+coherencia del 
+plan, sin detallar 
+relación con 
+estándares. 
+Presenta análisis 
+confuso o con 
+errores 
+conceptuales. 
+No analiza la 
+cobertura ni la 
+coherencia del 
+plan. 
+20% 
+Total 
+100% 
+ 
