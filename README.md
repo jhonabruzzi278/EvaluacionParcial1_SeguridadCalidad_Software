@@ -3,10 +3,12 @@
 ## Proyecto: Plan de Pruebas - Sistema Atlas
 
 **Asignatura:** ISY1102 - Seguridad y Calidad en el Desarrollo de Software  
-**Evaluacion:** Parcial N°1 - Diseñando un plan de pruebas seguro, legal y normativo  
-**Ponderacion:** 17% de la nota final  
-**Modalidad:** Grupal (maximo 3 integrantes)  
-**Caso Base:** Sistema "Atlas" - Plataforma web de gestion de clientes y contratos para pymes
+**Evaluacion Parcial 1 (EVA1):** Encargo - Diseñando un plan de pruebas seguro, legal y normativo  
+**Ponderacion EVA1:** 17% de la nota de Evaluaciones Parciales  
+**Modalidad EVA1:** Grupal (maximo 3 integrantes), sin presentacion  
+**Caso Base:** Sistema "Atlas" - Plataforma web de gestion de clientes y contratos para pymes  
+**Fecha de entrega EVA1:** 24/09/2026 a las 19:00 hrs via AVA  
+**Plazo de trabajo:** 2 semanas (desde el 10/09/2026)
 
 ---
 
@@ -14,12 +16,42 @@
 
 | Nombre Completo | Carrera | Seccion |
 |-----------------|---------|---------|
-| [Integrante 1]  | [Carrera] | [Seccion] |
-| [Integrante 2]  | [Carrera] | [Seccion] |
-| [Integrante 3]  | [Carrera] | [Seccion] |
+| Victor Silva    | [Carrera] | [Seccion] |
+| Jonathan Guerra | [Carrera] | [Seccion] |
+| Darlette Morales| [Carrera] | [Seccion] |
 
 **Docente:** [Nombre del docente]  
-**Fecha de entrega:** [Fecha]
+**Fecha de entrega EVA1 (Informe):** 24/09/2026 a las 19:00 hrs  
+**Fecha de entrega EVA2 (Teorica):** 24/09/2026 a las 19:00 hrs (duracion: 60 minutos)
+
+---
+
+## Evaluaciones del Parcial
+
+### EVA1 - Encargo Grupal (17%)
+**Modalidad:** Encargo sin presentacion, grupal (max. 3 integrantes)  
+**Entregable:** Informe con plan de pruebas del sistema Atlas  
+**Plataforma:** AVA  
+**Fecha limite:** 24/09/2026 - 19:00 hrs  
+
+### EVA2 - Evaluacion Teorica Individual (8%)
+**Modalidad:** Evaluacion teorica, individual  
+**Duracion:** 60 minutos  
+**Plataforma:** AVA  
+**Fecha e inicio:** 24/09/2026 - 19:00 hrs  
+**Preparacion:** Se compartio una Evaluacion Formativa en AVA para ensayar los contenidos
+
+---
+
+## Indicadores de Logro (IL) Oficiales del Curso
+
+| IL | Descripcion | Vinculacion con la Evaluacion |
+|----|-------------|-------------------------------|
+| **IL 1.1** | Reconoce el rol de la calidad del software en el desarrollo de productos, valorando su contribucion al exito del proyecto y comprendiendo el cumplimiento legal y normativo como un componente esencial del proceso de desarrollo. | **IE1** - Introduccion y criterios de calidad |
+| **IL 1.2** | Distingue las diferencias entre pruebas funcionales y no funcionales, analizando su relevancia en el aseguramiento de la calidad del software e integrando los criterios legales y normativos que sustentan su aplicacion. | **IE2** - Tipos de pruebas |
+| **IL 1.3** | Identifica pruebas de usabilidad, rendimiento y compatibilidad, reconociendo su impacto en la calidad, seguridad y conformidad normativa del software, y su aporte a la accesibilidad, confiabilidad y etica del producto final. | **IE3** - Casos de prueba no funcionales |
+| **IL 1.4** | Disena un plan de pruebas que describa la estrategia general, los objetivos, los recursos y el cronograma de ejecucion, asegurando coherencia con los requerimientos del proyecto y las normativas vigentes. | **IE4** - Elementos del plan de pruebas |
+| **IL 1.5** | Evalua la consistencia y cobertura del plan de pruebas propuesto, verificando su alineacion con los objetivos del proyecto, los estandares de calidad y los marcos legales y regulatorios aplicables. | **IE5** - Analisis de cobertura |
 
 ---
 
@@ -150,34 +182,37 @@ Cada caso debe contener: ID, Descripcion, Requerimiento asociado, Datos de entra
 
 ## Division de Tareas Sugerida (3 Integrantes)
 
-### Integrante A - Lider Tecnico y Seguridad
+### Victor Silva - Lider Tecnico y Seguridad
 **Responsable de:**
 - Seccion 1: Introduccion
 - Seccion 2: Criterios de Calidad, Seguridad y Cumplimiento Normativo
 - IE1 (15%) + IE5 parcial
 - Coordinar la matriz de trazabilidad
+- Preparacion EVA2: IL 1.1 y IL 1.5
 
 **Entregables:**
 - `02-Informe/01-Introduccion/introduccion.md`
 - `02-Informe/02-Criterios_Calidad/criterios_calidad.md`
 
-### Integrante B - Estrategia y Tipos de Prueba
+### Jonathan Guerra - Estrategia y Tipos de Prueba
 **Responsable de:**
 - Seccion 3: Estrategia de Pruebas
 - Seccion 4: Tipos de Pruebas
 - Seccion 5: Recursos Necesarios
 - IE2 (20%) + IE4 parcial
+- Preparacion EVA2: IL 1.2 y IL 1.4
 
 **Entregables:**
 - `02-Informe/03-Estrategia_Pruebas/estrategia.md`
 - `02-Informe/04-Tipos_Pruebas/tipos_pruebas.md`
 - `02-Informe/05-Recursos/recursos.md`
 
-### Integrante C - Casos de Prueba y Analisis
+### Darlette Morales - Casos de Prueba y Analisis
 **Responsable de:**
 - Seccion 6: Diseno de Casos de Prueba (minimo 5 casos)
 - Seccion 7: Analisis de Cobertura y Matriz de Trazabilidad
 - IE3 (20%) + IE5 parcial
+- Preparacion EVA2: IL 1.3 y IL 1.5
 
 **Entregables:**
 - `02-Informe/06-Casos_Prueba/casos_prueba.md`
@@ -188,6 +223,7 @@ Cada caso debe contener: ID, Descripcion, Requerimiento asociado, Datos de entra
 - Revision cruzada de secciones
 - Consolidacion del informe final en `04-Entrega/`
 - Verificacion de aspectos formales (formato, fuentes, interlineado)
+- Estudio grupal para EVA2 (evaluacion teorica individual del 24/09)
 
 ---
 
