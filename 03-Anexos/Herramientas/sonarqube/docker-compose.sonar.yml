@@ -1,0 +1,20 @@
+# SonarQube Community Build para el análisis estático de Atlas (EP3/EP4).
+# NO está en CodigoFuenteA para no modificar el código entregado.
+# Requisito Linux: sudo sysctl -w vm.max_map_count=262144   (y >= 2 GB de RAM libres)
+services:
+  sonarqube:
+    image: sonarqube:community
+    container_name: atlas-sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    volumes:
+      - sonar_data:/opt/sonarqube/data
+      - sonar_extensions:/opt/sonarqube/extensions
+      - sonar_logs:/opt/sonarqube/logs
+
+volumes:
+  sonar_data:
+  sonar_extensions:
+  sonar_logs:
