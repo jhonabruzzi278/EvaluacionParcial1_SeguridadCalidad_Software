@@ -1,6 +1,6 @@
-# Herramientas de prueba — guía de uso (ejecutar en el taller de proyectos)
+# Herramientas de prueba — guía de uso
 
-> La máquina de desarrollo no tiene Docker, así que estas instrucciones **no se han ejecutado con el stack oficial**. Sí se verificaron manualmente 8 puntos de alto riesgo en un entorno temporal equivalente (mismo código y mismo `dump-atlas.sql`, sin Docker); esos resultados están en `02-Informe/08-Ejecucion_Pruebas/registro_ejecucion.md` §2b, marcados como preliminares y pendientes de reconfirmar aquí, con evidencia. Si un comando de esta guía falla al probarlo por primera vez, registrar el ajuste en ese mismo documento.
+> Estas herramientas se ejecutaron el 29-oct-2026 sobre el stack Docker de Atlas (SonarQube, Semgrep, Gitleaks, Trivy, ZAP baseline, k6, Lighthouse y axe). Los scripts de las pruebas están en `ejecucion/` y la evidencia en `06-Evidencias/ejecucion/` y `06-Evidencias/estatico/`. Si un comando de esta guía falla al repetirlo, registrar el ajuste en `02-Informe/08-Ejecucion_Pruebas/registro_ejecucion.md`.
 
 ## 0. Preparación y reinicio del entorno
 
@@ -39,6 +39,14 @@ docker run --rm --network host \
 ```
 
 Resultados en `http://localhost:9000/dashboard?id=atlas-ep3`. Capturar: *Overview*, *Issues* filtrado por *Vulnerability* y *Security Hotspot*, *Quality Gate*.
+
+**Importante: analizar con las dependencias instaladas.** La regla de promesas sin manejar (S9383) necesita información de tipos. Sobre el código sin `node_modules`, SonarQube 26.10 reporta 10 bugs; con las dependencias instaladas reporta 25 (comprobado). Para no modificar `CodigoFuenteA`, analizar una copia:
+
+```bash
+mkdir -p /tmp/cfa && cp -r CodigoFuenteA/BACKEND CodigoFuenteA/FRONTEND /tmp/cfa/
+(cd /tmp/cfa/FRONTEND && npm install) && (cd /tmp/cfa/BACKEND && npm install)
+# y montar /tmp/cfa en lugar de CodigoFuenteA en el comando de sonar-scanner-cli (-v /tmp/cfa:/usr/src)
+```
 
 **Cómo leer el resultado**
 - **Vulnerabilidades / Hotspots** → insumo de EP4-IE6; mapear cada una a OWASP, requerimiento y norma (tabla en sección 9).

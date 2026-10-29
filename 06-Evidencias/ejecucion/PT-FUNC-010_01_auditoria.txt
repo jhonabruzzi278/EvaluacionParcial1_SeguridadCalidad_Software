@@ -1,0 +1,21 @@
+Caso: PT-FUNC-010 — Registro de auditoría de acciones críticas
+Requerimiento(s): RF-6.1
+Tipo: Funcional
+Inicio: 2026-10-29 12:16:00   Fin: 2026-10-29 12:16:01
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+  Registros de auditoría generados por las acciones:
+    admin | CLIENTES_CREAR: creó cliente Cliente AUD1793286948
+    admin | CLIENTES_ACTUALIZAR: actualizó cliente ID 25
+    admin | CONTRATOS_CREAR: creó contrato Contrato AUD1793286948 para cliente 25
+    admin | CONTRATOS_ELIMINAR: eliminó contrato ID 16
+  [CUMPLE] Se audita: crear cliente
+  [CUMPLE] Se audita: editar cliente
+  [CUMPLE] Se audita: crear contrato / subir documento
+  [NO CUMPLE] Se audita: descargar documento
+  [CUMPLE] Se audita: eliminar contrato
+  Acceso a la auditoría sin autenticación:
+  GET /auditoria -> HTTP 200 (2 ms) (sin Authorization) registros devueltos: 75
+  [NO CUMPLE] La auditoría solo es consultable con autenticación — HTTP 200, 75 registros expuestos
+
+VEREDICTO: Fallido  (4/6 criterios cumplidos)

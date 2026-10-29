@@ -1,0 +1,42 @@
+Caso: PT-DIS-001 — Disponibilidad, respaldo y recuperación
+Requerimiento(s): NFR-DIS-1, NFR-DIS-2, NFR-SEG-7
+Tipo: Disponibilidad / recuperación
+Inicio: 2026-10-29 12:51:34   Fin: 2026-10-29 12:52:19
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres)
+
+1) Caída del backend: docker kill atlas-backend y observación de la recuperación
+  Política de reinicio configurada en atlas-backend: unless-stopped
+  [CUMPLE] El backend tiene política de reinicio automático configurada — unless-stopped
+  Backend caído tras el kill: True
+  A los 20 s: estado del contenedor = exited; responde = False
+  Docker no reinició el contenedor: `docker kill` se trata como detención manual y la política de reinicio no se aplica (documentación de Docker).
+  [NO EVALUADO] Reinicio automático tras la caída (sin intervención manual) — no evaluable con `docker kill`; un fallo real del proceso no pudo simularse sin privilegios de root
+  Recuperación con una sola orden (docker start): 0.5 s
+  [CUMPLE] El servicio se recupera con intervención mínima en ≤ 15 min — 0.5 s con `docker start`
+2) docker compose down (sin -v) y up; persistencia de datos
+  Conteos antes: {'usuarios': '20', 'empresas': '8', 'clientes': '27', 'contratos': '26', 'documentos_contrato': '17', 'auditoria': '23354', 'empresa_usuarios': '13'}
+  Container atlas-postgres  Removing
+ Container atlas-postgres  Removed
+ Network atlas-network  Removing
+ Network atlas-network  Removed
+  Container atlas-backend  Started
+ Container atlas-frontend  Starting
+ Container atlas-frontend  Started
+  Conteos después: {'usuarios': '20', 'empresas': '8', 'clientes': '27', 'contratos': '26', 'documentos_contrato': '17', 'auditoria': '23354', 'empresa_usuarios': '13'}
+  Stack operativo nuevamente en 0.5 s
+  [CUMPLE] 100 % de los registros se conservan tras down/up — conteos idénticos por tabla
+3) Respaldo: pg_dump atlas > respaldo.sql
+  Respaldo generado con pg_dump: 168369 KB, 24022 líneas (archivo no versionado por su tamaño)
+4) Restauración en una BD vacía y comparación de conteos por tabla
+  CREATE DATABASE
+  Restauración: código 0 
+  Conteos original : {'usuarios': '20', 'empresas': '8', 'clientes': '27', 'contratos': '26', 'documentos_contrato': '17', 'auditoria': '23354', 'empresa_usuarios': '13'}
+  Conteos restaurado: {'usuarios': '20', 'empresas': '8', 'clientes': '27', 'contratos': '26', 'documentos_contrato': '17', 'auditoria': '23354', 'empresa_usuarios': '13'}
+  [CUMPLE] La restauración reproduce los conteos de todas las tablas
+5) Política de respaldo y recuperación documentada en el repositorio
+  Archivos de CodigoFuenteA que mencionan respaldo/backup: ninguno
+  [NO CUMPLE] Existe un documento de política de respaldo y recuperación — no hay procedimiento ni automatización de respaldo en el repositorio
+6) Presupuesto de indisponibilidad del 99,5 % mensual: 30 días × 24 h × 0,5 % = 3,6 h
+  [NO EVALUADO] Disponibilidad mensual del 99,5 % (NFR-DIS-1) — no medible en el período de prueba; solo se verificó el mecanismo de recuperación
+
+VEREDICTO: Fallido  (4/5 criterios evaluados cumplidos; 2 no evaluados)

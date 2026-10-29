@@ -1,0 +1,13 @@
+Caso: PT-FUNC-005 — Creación de empresa y rol administrador por defecto
+Requerimiento(s): RF-2.2, RF-2.3
+Tipo: Funcional
+Inicio: 2026-10-29 12:14:09   Fin: 2026-10-29 12:14:13
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+  POST /empresas -> HTTP 201 (11 ms) (formato usuario+empresa)
+  [CUMPLE] Empresa y usuario creados (201)
+  BD empresa_usuarios (rol_id|nombre): 1|administrador
+  [CUMPLE] El primer usuario de la empresa obtiene rol administrador (rol_id 1) — 1|administrador
+  [CUMPLE] El usuario creado puede iniciar sesión y recibe empresaId en el token — {"usuarioId": "6", "nombreUsuario": "qa_adm_1793286817", "empresaUsuarioId": "4", "empresaId": "5", "iat": 1793286853, "exp": 1793294053}
+
+VEREDICTO: Aprobado  (3/3 criterios cumplidos)

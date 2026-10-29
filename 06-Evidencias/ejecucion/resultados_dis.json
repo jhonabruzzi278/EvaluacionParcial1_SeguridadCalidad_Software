@@ -1,0 +1,47 @@
+{
+  "PT-DIS-001": {
+    "titulo": "Disponibilidad, respaldo y recuperación",
+    "req": "NFR-DIS-1, NFR-DIS-2, NFR-SEG-7",
+    "tipo": "Disponibilidad / recuperación",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "El backend tiene política de reinicio automático configurada",
+        "cumple": true,
+        "detalle": "unless-stopped"
+      },
+      {
+        "texto": "Reinicio automático tras la caída (sin intervención manual)",
+        "cumple": null,
+        "detalle": "no evaluable con `docker kill`; un fallo real del proceso no pudo simularse sin privilegios de root"
+      },
+      {
+        "texto": "El servicio se recupera con intervención mínima en ≤ 15 min",
+        "cumple": true,
+        "detalle": "0.5 s con `docker start`"
+      },
+      {
+        "texto": "100 % de los registros se conservan tras down/up",
+        "cumple": true,
+        "detalle": "conteos idénticos por tabla"
+      },
+      {
+        "texto": "La restauración reproduce los conteos de todas las tablas",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "Existe un documento de política de respaldo y recuperación",
+        "cumple": false,
+        "detalle": "no hay procedimiento ni automatización de respaldo en el repositorio"
+      },
+      {
+        "texto": "Disponibilidad mensual del 99,5 % (NFR-DIS-1)",
+        "cumple": null,
+        "detalle": "no medible en el período de prueba; solo se verificó el mecanismo de recuperación"
+      }
+    ],
+    "evidencia": "06-Evidencias/ejecucion/PT-DIS-001_01_recuperacion_respaldo.txt",
+    "fecha": "2026-10-29 12:51"
+  }
+}

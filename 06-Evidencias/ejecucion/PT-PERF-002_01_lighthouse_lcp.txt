@@ -1,0 +1,12 @@
+Caso: PT-PERF-002 — Carga de la página principal en conexión móvil
+Requerimiento(s): NFR-PERF-2
+Tipo: Rendimiento (frontend)
+Inicio: 2026-10-29 12:34:08   Fin: 2026-10-29 12:34:08
+Entorno: Docker local (frontend http://localhost:3350), Chrome headless Google Chrome 156.0.8078.73
+
+Lighthouse móvil con red 4G simulada sobre la página de ingreso y el inicio autenticado
+  /login: LCP 1.68 s, puntaje de rendimiento 99/100
+  /home: LCP 2.80 s, puntaje de rendimiento 95/100
+  [NO CUMPLE] LCP de la página principal < 2 s — 1.68 s · 2.80 s
+
+VEREDICTO: Fallido  (0/1 criterios evaluados cumplidos; 0 no evaluados)

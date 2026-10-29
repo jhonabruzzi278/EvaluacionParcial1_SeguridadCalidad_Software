@@ -1,0 +1,16 @@
+Caso: PT-SEG-006 — Gestión segura de errores y logs
+Requerimiento(s): NFR-SEG-6
+Tipo: Seguridad
+Inicio: 2026-10-29 12:14:31   Fin: 2026-10-29 12:14:31
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+  GET /clientes/abc -> HTTP 500 (2 ms) (ID no numérico) FUGA {"error":"Error al obtener cliente","glosa":"invalid input syntax for type bigint: \"abc\""}
+  GET /clientes/99999999 -> HTTP 404 (2 ms) (ID inexistente) {"error":"No encontrado"}
+  POST /clientes -> HTTP 400 (1 ms) (JSON mal formado) <!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <title>Error</title> </head> <body> <pre>Bad Request</pre> </body> </html> 
+  POST /usuarios -> HTTP 500 (1 ms) (usuario duplicado) FUGA {"error":"Error al crear usuario","glosa":"duplicate key value violates unique constraint \"usuarios_nombre_usuario_key\""}
+  GET /contratos/abc -> HTTP 500 (1 ms) (contrato ID no numérico) FUGA {"error":"Error al obtener contrato","glosa":"invalid input syntax for type bigint: \"abc\""}
+  [NO CUMPLE] 0 respuestas con detalle interno (err.message, SQL, rutas, stack) — 3/5 respuestas exponen detalles internos
+  Búsqueda de secretos en los logs del backend (últimas 40 líneas): sin coincidencias
+  [CUMPLE] Los logs no contienen contraseñas ni secretos
+
+VEREDICTO: Fallido  (1/2 criterios cumplidos)

@@ -1,0 +1,20 @@
+Caso: PT-FUNC-006 — Alta, edición y baja de usuarios con rol
+Requerimiento(s): RF-3.1, RF-3.3
+Tipo: Funcional
+Inicio: 2026-10-29 12:16:44   Fin: 2026-10-29 12:16:44
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+  POST /empresa-usuarios -> HTTP 201 (3 ms) (rol 1)
+  POST /empresa-usuarios -> HTTP 201 (2 ms) (rol 2)
+  [CUMPLE] Admin crea usuarios con rol administrador (1) y editor (2)
+  PUT /empresa-usuarios/13 -> HTTP 200 (2 ms) 
+  [CUMPLE] El administrador puede modificar el rol
+  DELETE /empresa-usuarios/13 -> HTTP 200 (3 ms) 
+  [CUMPLE] El administrador puede eliminar el vínculo
+  Auditoría reciente:
+    EMPRESA_USUARIOS_ELIMINAR: eliminó vínculo ID 13
+    EMPRESA_USUARIOS_ACTUALIZAR: actualizó vínculo ID 13
+    EMPRESA_USUARIOS_CREAR: vinculó usuario 24 a empresa 1 con rol 2
+  [CUMPLE] Las operaciones quedan registradas en auditoría
+
+VEREDICTO: Aprobado  (4/4 criterios cumplidos)

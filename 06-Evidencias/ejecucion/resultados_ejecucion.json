@@ -1,0 +1,842 @@
+{
+  "PT-FUNC-001": {
+    "titulo": "Flujo completo de contrato con documento adjunto",
+    "req": "RF-5.1, RF-5.2, RF-5.3, RB-3",
+    "tipo": "Funcional E2E",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "Contrato creado con 201 y asociado a un único cliente (RB-3)",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "El archivo descargado es idéntico al subido (mismo hash sha256)",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "Subida y descarga completadas en ≤ 10 s",
+        "cumple": true,
+        "detalle": "subida 10 ms + descarga 12 ms"
+      },
+      {
+        "texto": "Solo se aceptan PDF, DOC, PPT, JPG y PNG: macro.exe devuelve 4xx",
+        "cumple": false,
+        "detalle": "HTTP 201: el ejecutable fue aceptado"
+      },
+      {
+        "texto": "Existe y se aplica un límite de tamaño de archivo (400/413)",
+        "cumple": false,
+        "detalle": "HTTP 201: archivo de 30 MB aceptado"
+      },
+      {
+        "texto": "El documento se guarda en almacenamiento interno y la BD guarda solo la referencia (RF-5.3)",
+        "cumple": false,
+        "detalle": "el binario se guarda dentro de la BD (bytea, 700015 bytes)"
+      },
+      {
+        "texto": "Cliente inexistente → error 4xx con mensaje controlado y sin contrato huérfano",
+        "cumple": false,
+        "detalle": "HTTP 500 con err.message expuesto"
+      },
+      {
+        "texto": "Registro de auditoría de la creación del contrato (RF-6.1)",
+        "cumple": true,
+        "detalle": ""
+      }
+    ],
+    "observaciones": [],
+    "evidencia": "06-Evidencias/ejecucion/PT-FUNC-001_01_flujo_contrato.txt",
+    "fecha": "2026-10-29 12:13"
+  },
+  "PT-FUNC-002": {
+    "titulo": "Autenticación y emisión de JWT",
+    "req": "RF-1.1",
+    "tipo": "Funcional",
+    "veredicto": "Aprobado",
+    "criterios": [
+      {
+        "texto": "Login válido responde 200 con JWT",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "El JWT incluye expiración (exp)",
+        "cumple": true,
+        "detalle": "exp=1793294029"
+      },
+      {
+        "texto": "100 % de credenciales inválidas rechazadas con 401",
+        "cumple": true,
+        "detalle": "401/401/401"
+      }
+    ],
+    "observaciones": [
+      "Latencia del login medida: 4009 ms (el ERS exige < 300 ms; ver PT-PERF-001)."
+    ],
+    "evidencia": "06-Evidencias/ejecucion/PT-FUNC-002_01_login.txt",
+    "fecha": "2026-10-29 12:13"
+  },
+  "PT-FUNC-003": {
+    "titulo": "Cierre de sesión y revocación de token",
+    "req": "RF-1.2",
+    "tipo": "Funcional / seguridad",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "Existe una operación de cierre de sesión en el servidor",
+        "cumple": false,
+        "detalle": "logout -> 404"
+      },
+      {
+        "texto": "El token queda revocado: 401 tras el logout",
+        "cumple": false,
+        "detalle": "respuesta 200: el token sigue válido hasta su expiración (7200 s)"
+      }
+    ],
+    "observaciones": [],
+    "evidencia": "06-Evidencias/ejecucion/PT-FUNC-003_01_logout.txt",
+    "fecha": "2026-10-29 12:14"
+  },
+  "PT-FUNC-004": {
+    "titulo": "Registro de usuario y unicidad de correo",
+    "req": "RF-2.1, RB-1",
+    "tipo": "Funcional",
+    "veredicto": "Aprobado",
+    "criterios": [
+      {
+        "texto": "Alta con correo nuevo → 201",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "0 correos principales duplicados en la base de datos",
+        "cumple": true,
+        "detalle": "filas con ese correo: 1"
+      },
+      {
+        "texto": "Un correo no puede existir en dos empresas como correo principal (RB-1)",
+        "cumple": true,
+        "detalle": "201/500"
+      }
+    ],
+    "observaciones": [
+      "El duplicado se rechaza por la restricción UNIQUE de la BD, pero la API responde 500 y expone err.message (defecto de manejo de errores; ver PT-SEG-006)."
+    ],
+    "evidencia": "06-Evidencias/ejecucion/PT-FUNC-004_01_registro_correo.txt",
+    "fecha": "2026-10-29 12:15"
+  },
+  "PT-FUNC-005": {
+    "titulo": "Creación de empresa y rol administrador por defecto",
+    "req": "RF-2.2, RF-2.3",
+    "tipo": "Funcional",
+    "veredicto": "Aprobado",
+    "criterios": [
+      {
+        "texto": "Empresa y usuario creados (201)",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "El primer usuario de la empresa obtiene rol administrador (rol_id 1)",
+        "cumple": true,
+        "detalle": "1|administrador"
+      },
+      {
+        "texto": "El usuario creado puede iniciar sesión y recibe empresaId en el token",
+        "cumple": true,
+        "detalle": "{\"usuarioId\": \"6\", \"nombreUsuario\": \"qa_adm_1793286817\", \"empresaUsuarioId\": \"4\", \"empresaId\": \"5\", \"iat\": 1793286853, \"exp\": 1793294053}"
+      }
+    ],
+    "observaciones": [],
+    "evidencia": "06-Evidencias/ejecucion/PT-FUNC-005_01_empresa_rol.txt",
+    "fecha": "2026-10-29 12:14"
+  },
+  "PT-FUNC-006": {
+    "titulo": "Alta, edición y baja de usuarios con rol",
+    "req": "RF-3.1, RF-3.3",
+    "tipo": "Funcional",
+    "veredicto": "Aprobado",
+    "criterios": [
+      {
+        "texto": "Admin crea usuarios con rol administrador (1) y editor (2)",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "El administrador puede modificar el rol",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "El administrador puede eliminar el vínculo",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "Las operaciones quedan registradas en auditoría",
+        "cumple": true,
+        "detalle": ""
+      }
+    ],
+    "observaciones": [],
+    "evidencia": "06-Evidencias/ejecucion/PT-FUNC-006_01_usuarios_rol.txt",
+    "fecha": "2026-10-29 12:16"
+  },
+  "PT-FUNC-007": {
+    "titulo": "Creación de cliente y validaciones",
+    "req": "RF-4.1, RF-4.3",
+    "tipo": "Funcional",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "Datos válidos → 201",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "100 % de las entradas inválidas rechazadas con 400 y mensaje",
+        "cumple": false,
+        "detalle": "0/4 rechazadas"
+      }
+    ],
+    "observaciones": [],
+    "evidencia": "06-Evidencias/ejecucion/PT-FUNC-007_01_cliente_validaciones.txt",
+    "fecha": "2026-10-29 12:14"
+  },
+  "PT-FUNC-008": {
+    "titulo": "Listar, filtrar, editar y eliminar clientes",
+    "req": "RF-4.2",
+    "tipo": "Funcional",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "El listado admite paginación (limit=2 devuelve ≤ 2 elementos)",
+        "cumple": false,
+        "detalle": "devolvió 23"
+      },
+      {
+        "texto": "El filtro por nombre devuelve el cliente buscado",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "Edición correcta (200)",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "Eliminación lógica: el registro sigue en la BD con marca de baja",
+        "cumple": false,
+        "detalle": "el registro fue borrado físicamente"
+      }
+    ],
+    "observaciones": [],
+    "evidencia": "06-Evidencias/ejecucion/PT-FUNC-008_01_clientes_crud.txt",
+    "fecha": "2026-10-29 12:15"
+  },
+  "PT-FUNC-009": {
+    "titulo": "Estado del contrato y enlace compartido",
+    "req": "RF-5.4, RF-5.5",
+    "tipo": "Funcional / seguridad",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "El estado por fechas distingue contratos por vencer y expirados",
+        "cumple": true,
+        "detalle": "ids {'vencido': '19', 'por_vencer': '20', 'vigente': '21'}"
+      },
+      {
+        "texto": "Existe una función para generar y revocar un enlace compartido (RF-5.5)",
+        "cumple": false,
+        "detalle": "rutas probadas → [404, 404, 404, 404]; en openapi.json: ninguna"
+      }
+    ],
+    "observaciones": [],
+    "evidencia": "06-Evidencias/ejecucion/PT-FUNC-009_01_estado_enlace.txt",
+    "fecha": "2026-10-29 12:16"
+  },
+  "PT-FUNC-010": {
+    "titulo": "Registro de auditoría de acciones críticas",
+    "req": "RF-6.1",
+    "tipo": "Funcional",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "Se audita: crear cliente",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "Se audita: editar cliente",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "Se audita: crear contrato / subir documento",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "Se audita: descargar documento",
+        "cumple": false,
+        "detalle": ""
+      },
+      {
+        "texto": "Se audita: eliminar contrato",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "La auditoría solo es consultable con autenticación",
+        "cumple": false,
+        "detalle": "HTTP 200, 75 registros expuestos"
+      }
+    ],
+    "observaciones": [],
+    "evidencia": "06-Evidencias/ejecucion/PT-FUNC-010_01_auditoria.txt",
+    "fecha": "2026-10-29 12:16"
+  },
+  "PT-FUNC-011": {
+    "titulo": "Colección OpenAPI: cobertura de endpoints",
+    "req": "§3.1.2 ERS",
+    "tipo": "Funcional (API)",
+    "veredicto": "Aprobado",
+    "criterios": [
+      {
+        "texto": "≥ 80 % de los endpoints del backend cubiertos",
+        "cumple": true,
+        "detalle": "95 % (36/38)"
+      }
+    ],
+    "observaciones": [
+      "Se ejecutó con un cliente HTTP propio sobre openapi.json (equivalente a la colección Newman); no se evaluó contrato de respuesta campo a campo."
+    ],
+    "evidencia": "06-Evidencias/ejecucion/PT-FUNC-011_01_openapi.txt",
+    "fecha": "2026-10-29 12:16"
+  },
+  "PT-SEG-001": {
+    "titulo": "Hashing de contraseñas y política de contraseñas",
+    "req": "NFR-SEG-2; restricción ERS §2.4",
+    "tipo": "Seguridad (SAST + BD + API)",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "La dependencia y las llamadas de hashing existen en el backend",
+        "cumple": false,
+        "detalle": ""
+      },
+      {
+        "texto": "100 % de los registros tienen hash bcrypt ($2a$/$2b$/$2y$)",
+        "cumple": false,
+        "detalle": "0/6"
+      },
+      {
+        "texto": "El backend rechaza las contraseñas que incumplen la política (≥ 12, mayúscula, minúscula, número y símbolo)",
+        "cumple": false,
+        "detalle": "{'débil \"abc\"': 201, 'sin símbolo': 201, 'conforme': 201}"
+      },
+      {
+        "texto": "La contraseña almacenada no es legible (hash con sal)",
+        "cumple": false,
+        "detalle": "valor en BD: Atlas#2026-Segura"
+      }
+    ],
+    "observaciones": [],
+    "evidencia": "06-Evidencias/ejecucion/PT-SEG-001_01_hash_politica.txt",
+    "fecha": "2026-10-29 12:14"
+  },
+  "PT-SEG-002": {
+    "titulo": "Control de acceso por rol en el backend (RBAC)",
+    "req": "NFR-SEG-4, RF-3.2, RB-4, RB-5",
+    "tipo": "Seguridad (autorización)",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "El token incluye el rol del usuario",
+        "cumple": false,
+        "detalle": "campos: ['usuarioId', 'nombreUsuario', 'empresaUsuarioId', 'empresaId', 'iat', 'exp']"
+      },
+      {
+        "texto": "0 operaciones de escritura exitosas con rol editor",
+        "cumple": false,
+        "detalle": "6/7 escrituras exitosas"
+      },
+      {
+        "texto": "Las escrituras del editor se deniegan con 403",
+        "cumple": false,
+        "detalle": "códigos obtenidos: [201, 200, 500, 201, 200, 201, 200]"
+      },
+      {
+        "texto": "100 % de las operaciones permitidas para el administrador",
+        "cumple": true,
+        "detalle": ""
+      }
+    ],
+    "observaciones": [
+      "El paso 4 (manipular localStorage.role en el navegador) no se ejecutó: el backend ya acepta las escrituras del editor sin consultar rol, por lo que la restricción solo existe en la interfaz."
+    ],
+    "evidencia": "06-Evidencias/ejecucion/PT-SEG-002_01_rbac.txt",
+    "fecha": "2026-10-29 12:14"
+  },
+  "PT-SEG-003": {
+    "titulo": "TLS y redirección HTTP→HTTPS",
+    "req": "NFR-SEG-1",
+    "tipo": "Seguridad (configuración)",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "El tráfico HTTP es redirigido a HTTPS (301/308)",
+        "cumple": false,
+        "detalle": ""
+      },
+      {
+        "texto": "El frontend responde por TLS ≥ 1.2",
+        "cumple": false,
+        "detalle": ""
+      },
+      {
+        "texto": "La API responde por TLS ≥ 1.2",
+        "cumple": false,
+        "detalle": ""
+      }
+    ],
+    "observaciones": [],
+    "evidencia": "06-Evidencias/ejecucion/PT-SEG-003_01_tls.txt",
+    "fecha": "2026-10-29 12:14"
+  },
+  "PT-SEG-004": {
+    "titulo": "Cifrado de datos sensibles en reposo",
+    "req": "NFR-SEG-3",
+    "tipo": "Seguridad (BD)",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "numero_cuenta no es legible en la base de datos (cifrado en reposo)",
+        "cumple": false,
+        "detalle": "valor leído directamente: Banco Ficticio|123456789012|Titular Ficticio"
+      }
+    ],
+    "observaciones": [],
+    "evidencia": "06-Evidencias/ejecucion/PT-SEG-004_01_cifrado_reposo.txt",
+    "fecha": "2026-10-29 12:14"
+  },
+  "PT-SEG-005": {
+    "titulo": "Inyección SQL, XSS, CSRF y validación de entrada",
+    "req": "NFR-SEG-5",
+    "tipo": "Seguridad (DAST manual)",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "SQL Injection en búsqueda: sin datos extra ni error SQL (consultas parametrizadas)",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "Inyección en el login rechazada (401)",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "La entrada con HTML/JS se sanea o codifica en el servidor",
+        "cumple": false,
+        "detalle": "el payload se almacena y devuelve sin modificar (la mitigación depende solo del escapado de React)"
+      },
+      {
+        "texto": "100 % de las entradas inválidas rechazadas por el servidor (4xx)",
+        "cumple": false,
+        "detalle": "1/3"
+      },
+      {
+        "texto": "Cabeceras de seguridad mínimas presentes (CSP, X-Content-Type-Options, HSTS)",
+        "cumple": false,
+        "detalle": "faltan: content-security-policy, x-content-type-options, strict-transport-security"
+      },
+      {
+        "texto": "CORS restringido a orígenes autorizados",
+        "cumple": false,
+        "detalle": "Access-Control-Allow-Origin: *"
+      },
+      {
+        "texto": "No se divulga la tecnología del servidor (X-Powered-By)",
+        "cumple": false,
+        "detalle": "X-Powered-By: Express"
+      },
+      {
+        "texto": "Existe limitación de intentos de autenticación (429 o bloqueo)",
+        "cumple": false,
+        "detalle": "respuestas: [401]"
+      },
+      {
+        "texto": "0 alertas ZAP de riesgo Alto (alertas Medias justificadas)",
+        "cumple": false,
+        "detalle": "ZAP baseline: 0 alertas altas, 5 medias, 18 en total; medias: frontend: Content Security Policy (CSP) Header Not Set; frontend: Missing Anti-clickjacking Header; frontend: Sub Resource Integrity Attribute Missing; API: CSP: Failure to Define Directive with No Fallback; API: Cross-Domain Misconfiguration"
+      }
+    ],
+    "observaciones": [
+      "OWASP ZAP baseline (zaproxy:stable en Docker) ejecutado contra el frontend (http://localhost:3350) y la API (http://localhost:4450): informes en 06-Evidencias/ejecucion/zap/."
+    ],
+    "evidencia": "06-Evidencias/ejecucion/PT-SEG-005_01_inyeccion_xss.txt",
+    "fecha": "2026-10-29 12:16"
+  },
+  "PT-SEG-006": {
+    "titulo": "Gestión segura de errores y logs",
+    "req": "NFR-SEG-6",
+    "tipo": "Seguridad",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "0 respuestas con detalle interno (err.message, SQL, rutas, stack)",
+        "cumple": false,
+        "detalle": "3/5 respuestas exponen detalles internos"
+      },
+      {
+        "texto": "Los logs no contienen contraseñas ni secretos",
+        "cumple": true,
+        "detalle": ""
+      }
+    ],
+    "observaciones": [],
+    "evidencia": "06-Evidencias/ejecucion/PT-SEG-006_01_errores_logs.txt",
+    "fecha": "2026-10-29 12:14"
+  },
+  "PT-SEG-007": {
+    "titulo": "Cumplimiento técnico de protección de datos personales",
+    "req": "NFR-SEG-8",
+    "tipo": "Seguridad / normativo",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "0 secretos o credenciales por defecto en el código y la infraestructura",
+        "cumple": false,
+        "detalle": ""
+      },
+      {
+        "texto": "Existe consentimiento informado o política de privacidad visible (Ley 19.628 art. 4)",
+        "cumple": false,
+        "detalle": ""
+      },
+      {
+        "texto": "El acceso a datos personales requiere autenticación en todos los endpoints (art. 11 Ley 19.628)",
+        "cumple": false,
+        "detalle": "GET /contratos/15/file sin token → 200"
+      }
+    ],
+    "observaciones": [
+      "Gitleaks no se ejecutó en este ciclo; la búsqueda de secretos se hizo con grep sobre los archivos de configuración."
+    ],
+    "evidencia": "06-Evidencias/ejecucion/PT-SEG-007_01_datos_personales.txt",
+    "fecha": "2026-10-29 12:16"
+  },
+  "PT-SEG-008": {
+    "titulo": "Sesión JWT: expiración, firma y secreto",
+    "req": "NFR-SEG-9",
+    "tipo": "Seguridad (sesión)",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "El secreto JWT es robusto y no es un valor por defecto público",
+        "cumple": false,
+        "detalle": "valor: your-secret-key-change-in-production"
+      },
+      {
+        "texto": "Un token firmado con el secreto por defecto es rechazado",
+        "cumple": false,
+        "detalle": "HTTP 200"
+      },
+      {
+        "texto": "Un token con firma alterada es rechazado",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "Un token con alg=none es rechazado",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "Un token expirado es rechazado",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "El tiempo de vida del token es acotado (≤ 2 h)",
+        "cumple": true,
+        "detalle": "7200 s"
+      }
+    ],
+    "observaciones": [],
+    "evidencia": "06-Evidencias/ejecucion/PT-SEG-008_01_jwt.txt",
+    "fecha": "2026-10-29 12:14"
+  },
+  "PT-SEG-009": {
+    "titulo": "Aislamiento entre empresas (IDOR)",
+    "req": "RB-2",
+    "tipo": "Seguridad (autorización)",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "0 recursos de otra empresa accesibles o modificables",
+        "cumple": false,
+        "detalle": "6/9 accesos permitidos"
+      }
+    ],
+    "observaciones": [],
+    "evidencia": "06-Evidencias/ejecucion/PT-SEG-009_01_aislamiento.txt",
+    "fecha": "2026-10-29 12:54"
+  },
+  "PT-PERF-001": {
+    "titulo": "Tiempo de respuesta de operaciones CRUD",
+    "req": "NFR-PERF-1",
+    "tipo": "Rendimiento (carga)",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "p(95) < 300 ms en GET /clientes",
+        "cumple": false,
+        "detalle": "p(95) = 4025 ms (promedio 4009 ms, máx 4087 ms)"
+      },
+      {
+        "texto": "p(95) < 300 ms en POST /clientes",
+        "cumple": true,
+        "detalle": "p(95) = 31 ms (promedio 11 ms, máx 70 ms)"
+      },
+      {
+        "texto": "p(95) < 300 ms en PUT /clientes",
+        "cumple": true,
+        "detalle": "p(95) = 23 ms (promedio 9 ms, máx 41 ms)"
+      },
+      {
+        "texto": "p(95) < 300 ms en DELETE /clientes",
+        "cumple": true,
+        "detalle": "p(95) = 18 ms (promedio 7 ms, máx 29 ms)"
+      },
+      {
+        "texto": "p(95) < 300 ms en POST /autenticacion/login",
+        "cumple": false,
+        "detalle": "p(95) = 4010 ms (promedio 4008 ms, máx 4057 ms)"
+      },
+      {
+        "texto": "Tasa de errores < 1 %",
+        "cumple": true,
+        "detalle": "0.00 %"
+      }
+    ],
+    "observaciones": [
+      "GET /clientes y el login incluyen un retardo artificial de 4 s en el código (auth.js:17, clients.js); POST, PUT y DELETE cumplen el umbral."
+    ],
+    "evidencia": "06-Evidencias/ejecucion/PT-PERF-001_01_k6.txt",
+    "fecha": "2026-10-29"
+  },
+  "PT-PERF-002": {
+    "titulo": "Carga de la página principal en conexión móvil",
+    "req": "NFR-PERF-2",
+    "tipo": "Rendimiento (frontend)",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "LCP de la página principal < 2 s",
+        "cumple": false,
+        "detalle": "1.68 s · 2.80 s"
+      }
+    ],
+    "evidencia": "06-Evidencias/ejecucion/PT-PERF-002_01_lighthouse_lcp.txt",
+    "fecha": "2026-10-29 12:34"
+  },
+  "PT-PERF-003": {
+    "titulo": "200 usuarios concurrentes",
+    "req": "NFR-PERF-3",
+    "tipo": "Rendimiento (carga / estrés)",
+    "veredicto": "Aprobado",
+    "criterios": [
+      {
+        "texto": "Error 5xx / fallos HTTP < 1 %",
+        "cumple": true,
+        "detalle": "0.00 % de 32626 peticiones"
+      },
+      {
+        "texto": "El servicio sigue disponible al terminar la prueba (sin caída)",
+        "cumple": true,
+        "detalle": "GET / responde 200"
+      }
+    ],
+    "observaciones": [
+      "Latencia p95 bajo carga: 4005 ms (incluye el retardo artificial de 4 s de GET /clientes)."
+    ],
+    "evidencia": "06-Evidencias/ejecucion/PT-PERF-003_01_k6.txt",
+    "fecha": "2026-10-29"
+  },
+  "PT-PERF-004": {
+    "titulo": "Subida y descarga de documentos ≤ 10 s",
+    "req": "Criterio de aceptación de RF-5",
+    "tipo": "Rendimiento",
+    "veredicto": "Aprobado",
+    "criterios": [
+      {
+        "texto": "100 % de las operaciones de subida y descarga de un PDF de 5 MB ≤ 10 s",
+        "cumple": true,
+        "detalle": "máximos: subida 40 ms, descarga 62 ms (entorno local)"
+      }
+    ],
+    "observaciones": [],
+    "evidencia": "06-Evidencias/ejecucion/PT-PERF-004_01_documentos.txt",
+    "fecha": "2026-10-29 12:20"
+  },
+  "PT-USAB-001": {
+    "titulo": "Accesibilidad para adultos mayores (WCAG 2.1 AA)",
+    "req": "NFR-USAB-1; §3.1.1 ERS",
+    "tipo": "Usabilidad / accesibilidad",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "Lighthouse Accesibilidad ≥ 90 en las 5 URLs",
+        "cumple": false,
+        "detalle": "/login=96, /registro=95, /home=91, /clientes=89, /contratos=89"
+      },
+      {
+        "texto": "0 incidencias critical/serious en axe",
+        "cumple": false,
+        "detalle": "49 nodos con impacto crítico o serio"
+      },
+      {
+        "texto": "Contraste de texto ≥ 4,5:1 (regla color-contrast de axe)",
+        "cumple": false,
+        "detalle": "6 nodos con contraste insuficiente"
+      },
+      {
+        "texto": "Tamaño de fuente base ≥ 12 px (mínimo del ERS)",
+        "cumple": true,
+        "detalle": "fuente base por página: [14.0, 14.0, 14.0, 14.0, 14.0] (el ERS pide mayor legibilidad para adultos mayores: se recomienda ≥ 16 px)"
+      },
+      {
+        "texto": "Objetivos interactivos ≥ 44×44 px",
+        "cumple": false,
+        "detalle": "96 de 119 elementos interactivos miden menos de 44 px en alguna dimensión"
+      },
+      {
+        "texto": "SUS promedio ≥ 70 y tareas sin bloqueos con adultos mayores",
+        "cumple": null,
+        "detalle": "requiere participantes reales (no disponibles); se documenta como limitación"
+      }
+    ],
+    "evidencia": "06-Evidencias/ejecucion/PT-USAB-001_01_axe_lighthouse.txt",
+    "fecha": "2026-10-29 12:32"
+  },
+  "PT-USAB-002": {
+    "titulo": "Flujos claros de registro, creación de empresa y cliente → contratos",
+    "req": "NFR-USAB-2, NFR-USAB-4",
+    "tipo": "Usabilidad",
+    "veredicto": "No ejecutado",
+    "criterios": [],
+    "observaciones": [
+      "requiere tareas con usuarios y observación de tiempos y errores; no se contó con participantes"
+    ],
+    "evidencia": "—",
+    "fecha": ""
+  },
+  "PT-USAB-003": {
+    "titulo": "Ayuda contextual y mensajes de error amigables",
+    "req": "NFR-USAB-3",
+    "tipo": "Usabilidad",
+    "veredicto": "No ejecutado",
+    "criterios": [],
+    "observaciones": [
+      "requiere evaluación heurística con usuarios; solo se observó que la API devuelve mensajes técnicos (ver PT-SEG-006)"
+    ],
+    "evidencia": "—",
+    "fecha": ""
+  },
+  "PT-COMP-001": {
+    "titulo": "Responsividad en móviles y tablets",
+    "req": "NFR-COMPAT-2",
+    "tipo": "Compatibilidad (responsiva)",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "0 desbordes horizontales ni contenido recortado en las 4 resoluciones",
+        "cumple": false,
+        "detalle": "12 de 28 combinaciones página/resolución con contenido fuera del viewport"
+      },
+      {
+        "texto": "El menú de navegación se adapta al ancho móvil (no ocupa más del 40 % del ancho)",
+        "cumple": false,
+        "detalle": "10 casos; p. ej. 360x780 /home: menú de 239 px sobre 360 px de ancho"
+      },
+      {
+        "texto": "Elementos táctiles ≥ 44×44 px (resoluciones móviles)",
+        "cumple": false,
+        "detalle": "317 elementos < 44 px sumados en las resoluciones móviles"
+      },
+      {
+        "texto": "Flujos críticos (login, crear cliente, ver contrato) completables en móvil",
+        "cumple": null,
+        "detalle": "se verificó la presentación de las pantallas; la ejecución completa de los flujos con interacción táctil no se automatizó"
+      }
+    ],
+    "evidencia": "06-Evidencias/ejecucion/PT-COMP-001_01_responsivo.txt",
+    "fecha": "2026-10-29 12:34"
+  },
+  "PT-COMP-002": {
+    "titulo": "Compatibilidad en Chrome, Firefox, Edge y Safari",
+    "req": "NFR-COMPAT-1",
+    "tipo": "Compatibilidad",
+    "veredicto": "No ejecutado",
+    "criterios": [],
+    "observaciones": [
+      "solo Chrome está instalado y Safari no existe en Linux; no se verificó la funcionalidad por navegador"
+    ],
+    "evidencia": "—",
+    "fecha": ""
+  },
+  "PT-DIS-001": {
+    "titulo": "Disponibilidad, respaldo y recuperación",
+    "req": "NFR-DIS-1, NFR-DIS-2, NFR-SEG-7",
+    "tipo": "Disponibilidad / recuperación",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "El backend tiene política de reinicio automático configurada",
+        "cumple": true,
+        "detalle": "unless-stopped"
+      },
+      {
+        "texto": "Reinicio automático tras la caída (sin intervención manual)",
+        "cumple": null,
+        "detalle": "no evaluable con `docker kill`; un fallo real del proceso no pudo simularse sin privilegios de root"
+      },
+      {
+        "texto": "El servicio se recupera con intervención mínima en ≤ 15 min",
+        "cumple": true,
+        "detalle": "0.5 s con `docker start`"
+      },
+      {
+        "texto": "100 % de los registros se conservan tras down/up",
+        "cumple": true,
+        "detalle": "conteos idénticos por tabla"
+      },
+      {
+        "texto": "La restauración reproduce los conteos de todas las tablas",
+        "cumple": true,
+        "detalle": ""
+      },
+      {
+        "texto": "Existe un documento de política de respaldo y recuperación",
+        "cumple": false,
+        "detalle": "no hay procedimiento ni automatización de respaldo en el repositorio"
+      },
+      {
+        "texto": "Disponibilidad mensual del 99,5 % (NFR-DIS-1)",
+        "cumple": null,
+        "detalle": "no medible en el período de prueba; solo se verificó el mecanismo de recuperación"
+      }
+    ],
+    "evidencia": "06-Evidencias/ejecucion/PT-DIS-001_01_recuperacion_respaldo.txt",
+    "fecha": "2026-10-29 12:51"
+  },
+  "_cobertura_endpoints": {
+    "total": 38,
+    "cubiertos": 36,
+    "pct": 94.7
+  }
+}

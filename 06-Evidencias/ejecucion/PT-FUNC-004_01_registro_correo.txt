@@ -1,0 +1,15 @@
+Caso: PT-FUNC-004 — Registro de usuario y unicidad de correo
+Requerimiento(s): RF-2.1, RB-1
+Tipo: Funcional
+Inicio: 2026-10-29 12:15:56   Fin: 2026-10-29 12:15:56
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+  POST /usuarios -> HTTP 201 (2 ms) (correo nuevo)
+  [CUMPLE] Alta con correo nuevo → 201
+  POST /usuarios -> HTTP 500 (1 ms) (correo repetido) {"error":"Error al crear usuario","glosa":"duplicate key value violates unique constraint \"usuarios_correo_key\""}
+  [CUMPLE] 0 correos principales duplicados en la base de datos — filas con ese correo: 1
+  Observación: El duplicado se rechaza por la restricción UNIQUE de la BD, pero la API responde 500 y expone err.message (defecto de manejo de errores; ver PT-SEG-006).
+  Empresa con correo repetido: primer alta 201, segundo alta 500
+  [CUMPLE] Un correo no puede existir en dos empresas como correo principal (RB-1) — 201/500
+
+VEREDICTO: Aprobado  (3/3 criterios cumplidos)

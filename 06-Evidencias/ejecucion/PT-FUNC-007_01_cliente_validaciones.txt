@@ -1,0 +1,16 @@
+Caso: PT-FUNC-007 — Creación de cliente y validaciones
+Requerimiento(s): RF-4.1, RF-4.3
+Tipo: Funcional
+Inicio: 2026-10-29 12:14:13   Fin: 2026-10-29 12:14:13
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+  POST /clientes -> HTTP 201 (5 ms) (datos válidos)
+  [CUMPLE] Datos válidos → 201
+  POST /clientes -> HTTP 201 (3 ms) (correo sin formato) {"id":"6","nombre":"X","correo":"no-es-correo","telefono":null,"direcc
+  POST /clientes -> HTTP 201 (3 ms) (teléfono alfanumérico) {"id":"7","nombre":"X","correo":"tel_1793286817@atlasfake.com","telefo
+  POST /clientes -> HTTP 201 (3 ms) (RUT inválido) {"id":"8","nombre":"X","correo":"rut_1793286817@atlasfake.com","telefo
+  POST /clientes -> HTTP 201 (2 ms) (nombre vacío) {"id":"9","nombre":"","correo":"vac_1793286817@atlasfake.com","telefon
+  [NO CUMPLE] 100 % de las entradas inválidas rechazadas con 400 y mensaje — 0/4 rechazadas
+  Registros inválidos persistidos en la BD: 4
+
+VEREDICTO: Fallido  (1/2 criterios cumplidos)

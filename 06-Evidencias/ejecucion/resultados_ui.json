@@ -1,0 +1,87 @@
+{
+  "PT-USAB-001": {
+    "titulo": "Accesibilidad para adultos mayores (WCAG 2.1 AA)",
+    "req": "NFR-USAB-1; §3.1.1 ERS",
+    "tipo": "Usabilidad / accesibilidad",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "Lighthouse Accesibilidad ≥ 90 en las 5 URLs",
+        "cumple": false,
+        "detalle": "/login=96, /registro=95, /home=91, /clientes=89, /contratos=89"
+      },
+      {
+        "texto": "0 incidencias critical/serious en axe",
+        "cumple": false,
+        "detalle": "49 nodos con impacto crítico o serio"
+      },
+      {
+        "texto": "Contraste de texto ≥ 4,5:1 (regla color-contrast de axe)",
+        "cumple": false,
+        "detalle": "6 nodos con contraste insuficiente"
+      },
+      {
+        "texto": "Tamaño de fuente base ≥ 12 px (mínimo del ERS)",
+        "cumple": true,
+        "detalle": "fuente base por página: [14.0, 14.0, 14.0, 14.0, 14.0] (el ERS pide mayor legibilidad para adultos mayores: se recomienda ≥ 16 px)"
+      },
+      {
+        "texto": "Objetivos interactivos ≥ 44×44 px",
+        "cumple": false,
+        "detalle": "96 de 119 elementos interactivos miden menos de 44 px en alguna dimensión"
+      },
+      {
+        "texto": "SUS promedio ≥ 70 y tareas sin bloqueos con adultos mayores",
+        "cumple": null,
+        "detalle": "requiere participantes reales (no disponibles); se documenta como limitación"
+      }
+    ],
+    "evidencia": "06-Evidencias/ejecucion/PT-USAB-001_01_axe_lighthouse.txt",
+    "fecha": "2026-10-29 12:32"
+  },
+  "PT-PERF-002": {
+    "titulo": "Carga de la página principal en conexión móvil",
+    "req": "NFR-PERF-2",
+    "tipo": "Rendimiento (frontend)",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "LCP de la página principal < 2 s",
+        "cumple": false,
+        "detalle": "1.68 s · 2.80 s"
+      }
+    ],
+    "evidencia": "06-Evidencias/ejecucion/PT-PERF-002_01_lighthouse_lcp.txt",
+    "fecha": "2026-10-29 12:34"
+  },
+  "PT-COMP-001": {
+    "titulo": "Responsividad en móviles y tablets",
+    "req": "NFR-COMPAT-2",
+    "tipo": "Compatibilidad (responsiva)",
+    "veredicto": "Fallido",
+    "criterios": [
+      {
+        "texto": "0 desbordes horizontales ni contenido recortado en las 4 resoluciones",
+        "cumple": false,
+        "detalle": "12 de 28 combinaciones página/resolución con contenido fuera del viewport"
+      },
+      {
+        "texto": "El menú de navegación se adapta al ancho móvil (no ocupa más del 40 % del ancho)",
+        "cumple": false,
+        "detalle": "10 casos; p. ej. 360x780 /home: menú de 239 px sobre 360 px de ancho"
+      },
+      {
+        "texto": "Elementos táctiles ≥ 44×44 px (resoluciones móviles)",
+        "cumple": false,
+        "detalle": "317 elementos < 44 px sumados en las resoluciones móviles"
+      },
+      {
+        "texto": "Flujos críticos (login, crear cliente, ver contrato) completables en móvil",
+        "cumple": null,
+        "detalle": "se verificó la presentación de las pantallas; la ejecución completa de los flujos con interacción táctil no se automatizó"
+      }
+    ],
+    "evidencia": "06-Evidencias/ejecucion/PT-COMP-001_01_responsivo.txt",
+    "fecha": "2026-10-29 12:34"
+  }
+}

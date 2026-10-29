@@ -1,0 +1,23 @@
+Caso: PT-SEG-003 — TLS y redirección HTTP→HTTPS
+Requerimiento(s): NFR-SEG-1
+Tipo: Seguridad (configuración)
+Inicio: 2026-10-29 12:14:23   Fin: 2026-10-29 12:14:23
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+1) curl -I http://localhost:3350/
+    HTTP/1.1 200 OK
+    Server: nginx/1.31.8
+    Date: Thu, 29 Oct 2026 15:14:23 GMT
+    Content-Type: text/html
+    Content-Length: 999
+2) curl -k https://localhost:3350/ →
+    exit=0
+3) curl -k https://localhost:4450/ →
+    (sin respuesta TLS)
+4) nginx.conf:
+    2:    listen 80;
+  [NO CUMPLE] El tráfico HTTP es redirigido a HTTPS (301/308)
+  [NO CUMPLE] El frontend responde por TLS ≥ 1.2
+  [NO CUMPLE] La API responde por TLS ≥ 1.2
+
+VEREDICTO: Fallido  (0/3 criterios cumplidos)

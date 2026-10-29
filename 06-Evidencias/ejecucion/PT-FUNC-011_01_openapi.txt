@@ -1,0 +1,12 @@
+Caso: PT-FUNC-011 — Colección OpenAPI: cobertura de endpoints
+Requerimiento(s): §3.1.2 ERS
+Tipo: Funcional (API)
+Inicio: 2026-10-29 12:16:44   Fin: 2026-10-29 12:16:56
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+  Operaciones en openapi.json: 38; ejercitadas: 36 (95 %)
+  No ejercitadas: DELETE /clientes/{id}, PUT /clientes/{id}
+  [CUMPLE] ≥ 80 % de los endpoints del backend cubiertos — 95 % (36/38)
+  Observación: Se ejecutó con un cliente HTTP propio sobre openapi.json (equivalente a la colección Newman); no se evaluó contrato de respuesta campo a campo.
+
+VEREDICTO: Aprobado  (1/1 criterios cumplidos)

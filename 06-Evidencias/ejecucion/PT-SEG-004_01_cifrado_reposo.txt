@@ -1,0 +1,15 @@
+Caso: PT-SEG-004 — Cifrado de datos sensibles en reposo
+Requerimiento(s): NFR-SEG-3
+Tipo: Seguridad (BD)
+Inicio: 2026-10-29 12:14:23   Fin: 2026-10-29 12:14:23
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+1) Cliente creado id=17. SELECT en la BD →
+    Banco Ficticio|123456789012|Titular Ficticio
+  [NO CUMPLE] numero_cuenta no es legible en la base de datos (cifrado en reposo) — valor leído directamente: Banco Ficticio|123456789012|Titular Ficticio
+2) Tipos de columna:
+    nombre_banco|text
+    numero_cuenta|text
+    titular_cuenta|text
+
+VEREDICTO: Fallido  (0/1 criterios cumplidos)

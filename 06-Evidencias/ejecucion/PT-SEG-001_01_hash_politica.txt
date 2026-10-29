@@ -1,0 +1,25 @@
+Caso: PT-SEG-001 — Hashing de contraseñas y política de contraseñas
+Requerimiento(s): NFR-SEG-2; restricción ERS §2.4
+Tipo: Seguridad (SAST + BD + API)
+Inicio: 2026-10-29 12:14:19   Fin: 2026-10-29 12:14:19
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+1) SAST: búsqueda de bcrypt/argon2/scrypt en backend → "sin coincidencias"
+  [NO CUMPLE] La dependencia y las llamadas de hashing existen en el backend
+2) Base de datos: SELECT nombre_usuario, contrasena_hash FROM usuarios:
+    admin|admin
+    editor|editor
+    qa_b_1793286817|Qa#EmpresaB-2026x
+    qa_u1_1793286817|Qa#Segura-2026ab
+    qa_adm_1793286817|Qa#Admin-2026xx
+    qa_ed_1793286817_1|Qa#Rol-2026xxxx
+  [NO CUMPLE] 100 % de los registros tienen hash bcrypt ($2a$/$2b$/$2y$) — 0/6
+3) Política de contraseñas: alta con tres contraseñas
+  POST /usuarios -> HTTP 201 (3 ms) (débil "abc")
+  POST /usuarios -> HTTP 201 (1 ms) (sin símbolo)
+  POST /usuarios -> HTTP 201 (1 ms) (conforme)
+  [NO CUMPLE] El backend rechaza las contraseñas que incumplen la política (≥ 12, mayúscula, minúscula, número y símbolo) — {'débil "abc"': 201, 'sin símbolo': 201, 'conforme': 201}
+4) Valor almacenado para la contraseña conforme: "Atlas#2026-Segura"
+  [NO CUMPLE] La contraseña almacenada no es legible (hash con sal) — valor en BD: Atlas#2026-Segura
+
+VEREDICTO: Fallido  (0/4 criterios cumplidos)

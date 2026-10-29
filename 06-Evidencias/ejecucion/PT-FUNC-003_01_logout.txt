@@ -1,0 +1,14 @@
+Caso: PT-FUNC-003 — Cierre de sesión y revocación de token
+Requerimiento(s): RF-1.2
+Tipo: Funcional / seguridad
+Inicio: 2026-10-29 12:14:01   Fin: 2026-10-29 12:14:09
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+  POST /autenticacion/logout -> HTTP 404 (2 ms) <!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <title>Error</title> </head
+  GET /autenticacion/logout -> HTTP 404 (1 ms) <!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <title>Error</title> </head
+  POST /autenticacion/refresh -> HTTP 404 (0 ms) <!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <title>Error</title> </head
+  [NO CUMPLE] Existe una operación de cierre de sesión en el servidor — logout -> 404
+  GET /clientes -> HTTP 200 (4007 ms) (reutilizar el token tras "cerrar sesión")
+  [NO CUMPLE] El token queda revocado: 401 tras el logout — respuesta 200: el token sigue válido hasta su expiración (7200 s)
+
+VEREDICTO: Fallido  (0/2 criterios cumplidos)

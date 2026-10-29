@@ -1,0 +1,21 @@
+Caso: PT-SEG-007 — Cumplimiento técnico de protección de datos personales
+Requerimiento(s): NFR-SEG-8
+Tipo: Seguridad / normativo
+Inicio: 2026-10-29 12:16:09   Fin: 2026-10-29 12:16:09
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+1) Secretos y credenciales por defecto en el código/compose:
+    CodigoFuenteA/BACKEND/src/db.js:6:  "postgres://postgres:alone15@localhost:5432/atlas";
+    CodigoFuenteA/docker-compose.yml:7:      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    CodigoFuenteA/docker-compose.yml:33:      - DATABASE_URL=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@atlas-postgres:5432/${POSTGRES_DB:-atlas}
+    CodigoFuenteA/docker-compose.yml:35:      - JWT_SECRET=${JWT_SECRET:-your-secret-key-change-in-production}
+    CodigoFuenteA/BACKEND/src/routes/auth.js:7:const JWT_SECRET = process.env.JWT_SECRET || "inseguro";
+  [NO CUMPLE] 0 secretos o credenciales por defecto en el código y la infraestructura
+2) Datos personales almacenados (columnas de clientes con datos personales/bancarios): correo, telefono, direccion, rut, correo_representante, nombre_banco, numero_cuenta, titular_cuenta
+3) Búsqueda de consentimiento / política de privacidad en el frontend: sin coincidencias
+  [NO CUMPLE] Existe consentimiento informado o política de privacidad visible (Ley 19.628 art. 4)
+4) Trazabilidad de acceso: 77 registros de auditoría; consulta de /auditoria sin autenticación posible (ver PT-FUNC-010).
+  [NO CUMPLE] El acceso a datos personales requiere autenticación en todos los endpoints (art. 11 Ley 19.628) — GET /contratos/15/file sin token → 200
+  Observación: Gitleaks no se ejecutó en este ciclo; la búsqueda de secretos se hizo con grep sobre los archivos de configuración.
+
+VEREDICTO: Fallido  (0/3 criterios cumplidos)

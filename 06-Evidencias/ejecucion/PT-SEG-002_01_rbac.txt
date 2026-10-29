@@ -1,0 +1,26 @@
+Caso: PT-SEG-002 — Control de acceso por rol en el backend (RBAC)
+Requerimiento(s): NFR-SEG-4, RF-3.2, RB-4, RB-5
+Tipo: Seguridad (autorización)
+Inicio: 2026-10-29 12:14:19   Fin: 2026-10-29 12:14:23
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+1) Payload JWT editor: {"usuarioId": "2", "nombreUsuario": "editor", "empresaUsuarioId": "2", "empresaId": "1", "iat": 1793286821, "exp": 1793294021}
+   Payload JWT admin : {"usuarioId": "1", "nombreUsuario": "admin", "empresaUsuarioId": "1", "empresaId": "1", "iat": 1793286821, "exp": 1793294021}
+  [NO CUMPLE] El token incluye el rol del usuario — campos: ['usuarioId', 'nombreUsuario', 'empresaUsuarioId', 'empresaId', 'iat', 'exp']
+2) Operaciones con TOKEN_EDITOR (esperado: lectura 200; escritura 403):
+  GET /clientes -> HTTP 200 (4007 ms) [lectura] [{"id":"14","nombre":"RBAC 1793286817","correo":"rbac_1793286817@atlas
+  POST /clientes -> HTTP 201 (6 ms) [escritura] {"id":"15","nombre":"Editor crea 1793286817","correo":"edit_1793286817
+  PUT /clientes/14 -> HTTP 200 (4 ms) [escritura] {"id":"14","nombre":"Editor edita 1793286817","correo":"rbac_179328681
+  DELETE /clientes/14 -> HTTP 500 (3 ms) [escritura] {"error":"Error al eliminar cliente","glosa":"update or delete on tabl
+  POST /contratos -> HTTP 201 (10 ms) [escritura] {"id":"13","cliente_id":"14","titulo":"Editor K 1793286817","descripci
+  DELETE /contratos/12 -> HTTP 200 (2 ms) [escritura] {"deleted":true}
+  POST /empresa-usuarios -> HTTP 201 (3 ms) [escritura] {"id":"7","empresa_id":"1","usuario_id":"13","rol_id":"1","created_at"
+  DELETE /usuarios/12 -> HTTP 200 (2 ms) [escritura] {"deleted":true}
+  [NO CUMPLE] 0 operaciones de escritura exitosas con rol editor — 6/7 escrituras exitosas
+  [NO CUMPLE] Las escrituras del editor se deniegan con 403 — códigos obtenidos: [201, 200, 500, 201, 200, 201, 200]
+3) Con TOKEN_ADMIN las operaciones permitidas funcionan (2xx):
+  POST /clientes -> 201
+  [CUMPLE] 100 % de las operaciones permitidas para el administrador
+  Observación: El paso 4 (manipular localStorage.role en el navegador) no se ejecutó: el backend ya acepta las escrituras del editor sin consultar rol, por lo que la restricción solo existe en la interfaz.
+
+VEREDICTO: Fallido  (1/4 criterios cumplidos)

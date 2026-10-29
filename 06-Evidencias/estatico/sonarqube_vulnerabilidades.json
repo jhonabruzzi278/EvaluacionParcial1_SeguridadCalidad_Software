@@ -1,1 +1,277 @@
-{"total":4,"p":1,"ps":50,"paging":{"pageIndex":1,"pageSize":50,"total":4},"effortTotal":280,"issues":[{"key":"58b71a32-c58f-4909-8ff5-7f5084637524","rule":"javascript:S5689","severity":"MINOR","component":"atlas-ep3:BACKEND/src/app.js","project":"atlas-ep3","line":20,"hash":"4af77bcf43147b78489dd9c4043bfe01","textRange":{"startLine":20,"endLine":20,"startOffset":6,"endOffset":9},"flows":[],"status":"OPEN","message":"This framework implicitly discloses version information by default. Make sure it is safe here.","effort":"5min","debt":"5min","author":"","tags":["cwe","express.js","former-hotspot"],"creationDate":"2026-10-29T10:40:23-0300","updateDate":"2026-10-29T10:40:23-0300","type":"VULNERABILITY","scope":"MAIN","quickFixAvailable":false,"messageFormattings":[],"codeVariants":[],"cleanCodeAttribute":"TRUSTWORTHY","cleanCodeAttributeCategory":"RESPONSIBLE","impacts":[{"softwareQuality":"SECURITY","severity":"LOW"}],"issueStatus":"OPEN","prioritizedRule":false,"fromSonarQubeUpdate":false,"internalTags":[],"linkedTicketStatus":"NOT_LINKED"},{"key":"cde77f4d-0f82-4aa5-809b-e54a2bae8111","rule":"javascript:S5122","severity":"MAJOR","component":"atlas-ep3:BACKEND/src/app.js","project":"atlas-ep3","line":22,"hash":"c130ad820d45a83a455ca80ab658384e","textRange":{"startLine":22,"endLine":22,"startOffset":0,"endOffset":15},"flows":[],"status":"OPEN","message":"Make sure that enabling CORS is safe here.","effort":"4h","debt":"4h","author":"","tags":["cwe","express.js","former-hotspot"],"creationDate":"2026-10-29T10:40:23-0300","updateDate":"2026-10-29T10:40:23-0300","type":"VULNERABILITY","scope":"MAIN","quickFixAvailable":false,"messageFormattings":[],"codeVariants":[],"cleanCodeAttribute":"COMPLETE","cleanCodeAttributeCategory":"INTENTIONAL","impacts":[{"softwareQuality":"SECURITY","severity":"MEDIUM"}],"issueStatus":"OPEN","prioritizedRule":false,"fromSonarQubeUpdate":false,"internalTags":[],"linkedTicketStatus":"NOT_LINKED"},{"key":"05c35fdc-a7db-489f-97e7-5a86dca3496d","rule":"secrets:S6698","severity":"BLOCKER","component":"atlas-ep3:BACKEND/src/db.js","project":"atlas-ep3","line":6,"hash":"9bd480a5cc8cb8951e6bfc4c75b2d1b0","textRange":{"startLine":6,"endLine":6,"startOffset":23,"endOffset":30},"flows":[],"status":"OPEN","message":"Make sure this PostgreSQL password gets changed and removed from the code.","effort":"30min","debt":"30min","author":"","tags":["cwe","secret"],"creationDate":"2026-10-29T10:40:23-0300","updateDate":"2026-10-29T10:40:23-0300","type":"VULNERABILITY","scope":"MAIN","quickFixAvailable":false,"messageFormattings":[],"codeVariants":[],"cleanCodeAttribute":"TRUSTWORTHY","cleanCodeAttributeCategory":"RESPONSIBLE","impacts":[{"softwareQuality":"SECURITY","severity":"BLOCKER"}],"issueStatus":"OPEN","prioritizedRule":false,"fromSonarQubeUpdate":false,"internalTags":[],"linkedTicketStatus":"NOT_LINKED"},{"key":"e8f7dbf9-bfd9-415a-8f42-c7f8bc4ac80e","rule":"javascript:S5693","severity":"MAJOR","component":"atlas-ep3:BACKEND/src/routes/contracts.js","project":"atlas-ep3","line":15,"hash":"9b926b79547ceaf33a15d55d3b76d035","textRange":{"startLine":15,"endLine":15,"startOffset":15,"endOffset":21},"flows":[],"status":"OPEN","message":"Make sure the content length limit is safe here.","effort":"5min","debt":"5min","author":"","tags":["cwe","express.js","former-hotspot"],"creationDate":"2026-10-29T10:40:23-0300","updateDate":"2026-10-29T10:40:23-0300","type":"VULNERABILITY","scope":"MAIN","quickFixAvailable":false,"messageFormattings":[],"codeVariants":[],"cleanCodeAttribute":"TRUSTWORTHY","cleanCodeAttributeCategory":"RESPONSIBLE","impacts":[{"softwareQuality":"SECURITY","severity":"MEDIUM"}],"issueStatus":"OPEN","prioritizedRule":false,"fromSonarQubeUpdate":false,"internalTags":[],"linkedTicketStatus":"NOT_LINKED"}],"components":[{"key":"atlas-ep3:BACKEND/src/db.js","enabled":true,"qualifier":"FIL","name":"db.js","longName":"BACKEND/src/db.js","path":"BACKEND/src/db.js"},{"key":"atlas-ep3","enabled":true,"qualifier":"TRK","name":"Atlas EP3-EP4","longName":"Atlas EP3-EP4"},{"key":"atlas-ep3:BACKEND/src/app.js","enabled":true,"qualifier":"FIL","name":"app.js","longName":"BACKEND/src/app.js","path":"BACKEND/src/app.js"},{"key":"atlas-ep3:BACKEND/src/routes/contracts.js","enabled":true,"qualifier":"FIL","name":"contracts.js","longName":"BACKEND/src/routes/contracts.js","path":"BACKEND/src/routes/contracts.js"}],"facets":[]}
+{
+    "total": 4,
+    "p": 1,
+    "ps": 500,
+    "paging": {
+        "pageIndex": 1,
+        "pageSize": 500,
+        "total": 4
+    },
+    "effortTotal": 280,
+    "issues": [
+        {
+            "key": "4beed0b0-f028-4674-9ce3-41bfb65db4d7",
+            "rule": "javascript:S5689",
+            "severity": "MINOR",
+            "component": "atlas-ep3:BACKEND/src/app.js",
+            "project": "atlas-ep3",
+            "line": 20,
+            "hash": "4af77bcf43147b78489dd9c4043bfe01",
+            "textRange": {
+                "startLine": 20,
+                "endLine": 20,
+                "startOffset": 6,
+                "endOffset": 9
+            },
+            "flows": [],
+            "status": "OPEN",
+            "message": "This framework implicitly discloses version information by default. Make sure it is safe here.",
+            "effort": "5min",
+            "debt": "5min",
+            "author": "",
+            "tags": [
+                "cwe",
+                "express.js",
+                "former-hotspot"
+            ],
+            "creationDate": "2026-10-29T14:43:18+0000",
+            "updateDate": "2026-10-29T14:43:18+0000",
+            "type": "VULNERABILITY",
+            "scope": "MAIN",
+            "quickFixAvailable": false,
+            "messageFormattings": [],
+            "codeVariants": [],
+            "cleanCodeAttribute": "TRUSTWORTHY",
+            "cleanCodeAttributeCategory": "RESPONSIBLE",
+            "impacts": [
+                {
+                    "softwareQuality": "SECURITY",
+                    "severity": "LOW"
+                }
+            ],
+            "issueStatus": "OPEN",
+            "prioritizedRule": false,
+            "fromSonarQubeUpdate": false,
+            "internalTags": [],
+            "linkedTicketStatus": "NOT_LINKED"
+        },
+        {
+            "key": "555dddc4-b07b-4e9c-9633-b031b044e3ac",
+            "rule": "javascript:S5122",
+            "severity": "MAJOR",
+            "component": "atlas-ep3:BACKEND/src/app.js",
+            "project": "atlas-ep3",
+            "line": 22,
+            "hash": "c130ad820d45a83a455ca80ab658384e",
+            "textRange": {
+                "startLine": 22,
+                "endLine": 22,
+                "startOffset": 0,
+                "endOffset": 15
+            },
+            "flows": [],
+            "status": "OPEN",
+            "message": "Make sure that enabling CORS is safe here.",
+            "effort": "4h",
+            "debt": "4h",
+            "author": "",
+            "tags": [
+                "cwe",
+                "express.js",
+                "former-hotspot"
+            ],
+            "creationDate": "2026-10-29T14:43:18+0000",
+            "updateDate": "2026-10-29T14:43:18+0000",
+            "type": "VULNERABILITY",
+            "scope": "MAIN",
+            "quickFixAvailable": false,
+            "messageFormattings": [],
+            "codeVariants": [],
+            "cleanCodeAttribute": "COMPLETE",
+            "cleanCodeAttributeCategory": "INTENTIONAL",
+            "impacts": [
+                {
+                    "softwareQuality": "SECURITY",
+                    "severity": "MEDIUM"
+                }
+            ],
+            "issueStatus": "OPEN",
+            "prioritizedRule": false,
+            "fromSonarQubeUpdate": false,
+            "internalTags": [],
+            "linkedTicketStatus": "NOT_LINKED"
+        },
+        {
+            "key": "aa15aa61-7d69-4ef9-afe2-29a3c027bbc9",
+            "rule": "secrets:S6698",
+            "severity": "BLOCKER",
+            "component": "atlas-ep3:BACKEND/src/db.js",
+            "project": "atlas-ep3",
+            "line": 6,
+            "hash": "9bd480a5cc8cb8951e6bfc4c75b2d1b0",
+            "textRange": {
+                "startLine": 6,
+                "endLine": 6,
+                "startOffset": 23,
+                "endOffset": 30
+            },
+            "flows": [],
+            "status": "OPEN",
+            "message": "Make sure this PostgreSQL password gets changed and removed from the code.",
+            "effort": "30min",
+            "debt": "30min",
+            "author": "",
+            "tags": [
+                "cwe",
+                "secret"
+            ],
+            "creationDate": "2026-10-29T14:43:18+0000",
+            "updateDate": "2026-10-29T14:43:18+0000",
+            "type": "VULNERABILITY",
+            "scope": "MAIN",
+            "quickFixAvailable": false,
+            "messageFormattings": [],
+            "codeVariants": [],
+            "cleanCodeAttribute": "TRUSTWORTHY",
+            "cleanCodeAttributeCategory": "RESPONSIBLE",
+            "impacts": [
+                {
+                    "softwareQuality": "SECURITY",
+                    "severity": "BLOCKER"
+                }
+            ],
+            "issueStatus": "OPEN",
+            "prioritizedRule": false,
+            "fromSonarQubeUpdate": false,
+            "internalTags": [],
+            "linkedTicketStatus": "NOT_LINKED"
+        },
+        {
+            "key": "941162d2-ca4c-467c-bbd6-d998741225cd",
+            "rule": "javascript:S5693",
+            "severity": "MAJOR",
+            "component": "atlas-ep3:BACKEND/src/routes/contracts.js",
+            "project": "atlas-ep3",
+            "line": 15,
+            "hash": "9b926b79547ceaf33a15d55d3b76d035",
+            "textRange": {
+                "startLine": 15,
+                "endLine": 15,
+                "startOffset": 15,
+                "endOffset": 21
+            },
+            "flows": [],
+            "status": "OPEN",
+            "message": "Make sure the content length limit is safe here.",
+            "effort": "5min",
+            "debt": "5min",
+            "author": "",
+            "tags": [
+                "cwe",
+                "express.js",
+                "former-hotspot"
+            ],
+            "creationDate": "2026-10-29T14:43:18+0000",
+            "updateDate": "2026-10-29T14:43:18+0000",
+            "type": "VULNERABILITY",
+            "scope": "MAIN",
+            "quickFixAvailable": false,
+            "messageFormattings": [],
+            "codeVariants": [],
+            "cleanCodeAttribute": "TRUSTWORTHY",
+            "cleanCodeAttributeCategory": "RESPONSIBLE",
+            "impacts": [
+                {
+                    "softwareQuality": "SECURITY",
+                    "severity": "MEDIUM"
+                }
+            ],
+            "issueStatus": "OPEN",
+            "prioritizedRule": false,
+            "fromSonarQubeUpdate": false,
+            "internalTags": [],
+            "linkedTicketStatus": "NOT_LINKED"
+        }
+    ],
+    "components": [
+        {
+            "key": "atlas-ep3:BACKEND/src/app.js",
+            "enabled": true,
+            "qualifier": "FIL",
+            "name": "app.js",
+            "longName": "BACKEND/src/app.js",
+            "path": "BACKEND/src/app.js"
+        },
+        {
+            "key": "atlas-ep3",
+            "enabled": true,
+            "qualifier": "TRK",
+            "name": "Atlas EP3-EP4",
+            "longName": "Atlas EP3-EP4"
+        },
+        {
+            "key": "atlas-ep3:BACKEND/src/routes/contracts.js",
+            "enabled": true,
+            "qualifier": "FIL",
+            "name": "contracts.js",
+            "longName": "BACKEND/src/routes/contracts.js",
+            "path": "BACKEND/src/routes/contracts.js"
+        },
+        {
+            "key": "atlas-ep3:BACKEND/src/db.js",
+            "enabled": true,
+            "qualifier": "FIL",
+            "name": "db.js",
+            "longName": "BACKEND/src/db.js",
+            "path": "BACKEND/src/db.js"
+        }
+    ],
+    "facets": [
+        {
+            "property": "severities",
+            "values": [
+                {
+                    "val": "MAJOR",
+                    "count": 2
+                },
+                {
+                    "val": "BLOCKER",
+                    "count": 1
+                },
+                {
+                    "val": "MINOR",
+                    "count": 1
+                },
+                {
+                    "val": "INFO",
+                    "count": 0
+                },
+                {
+                    "val": "CRITICAL",
+                    "count": 0
+                }
+            ]
+        },
+        {
+            "property": "rules",
+            "values": [
+                {
+                    "val": "javascript:S5122",
+                    "count": 1
+                },
+                {
+                    "val": "javascript:S5689",
+                    "count": 1
+                },
+                {
+                    "val": "secrets:S6698",
+                    "count": 1
+                },
+                {
+                    "val": "javascript:S5693",
+                    "count": 1
+                }
+            ]
+        }
+    ]
+}

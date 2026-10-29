@@ -1,0 +1,15 @@
+Caso: PT-FUNC-009 — Estado del contrato y enlace compartido
+Requerimiento(s): RF-5.4, RF-5.5
+Tipo: Funcional / seguridad
+Inicio: 2026-10-29 12:16:44   Fin: 2026-10-29 12:16:44
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+  GET /contratos/estados -> HTTP 200 (2 ms) [{"id": "9", "cliente_id": "3", "titulo": "Estado por_vencer 1793286817", "descripcion": null, "fecha_inicio": "2026-08-30T00:00:00.000Z", "fecha_fin": "2026-11-08T00:00:00.000Z", "created_at": "2026-
+  [CUMPLE] El estado por fechas distingue contratos por vencer y expirados — ids {'vencido': '19', 'por_vencer': '20', 'vigente': '21'}
+  POST /contratos/18/compartir -> 404
+  POST /contratos/18/share -> 404
+  POST /contratos/18/enlace -> 404
+  POST /contratos/18/link -> 404
+  [NO CUMPLE] Existe una función para generar y revocar un enlace compartido (RF-5.5) — rutas probadas → [404, 404, 404, 404]; en openapi.json: ninguna
+
+VEREDICTO: Fallido  (1/2 criterios cumplidos)

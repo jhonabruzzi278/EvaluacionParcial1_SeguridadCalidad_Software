@@ -1,0 +1,17 @@
+Caso: PT-FUNC-008 — Listar, filtrar, editar y eliminar clientes
+Requerimiento(s): RF-4.2
+Tipo: Funcional
+Inicio: 2026-10-29 12:15:56   Fin: 2026-10-29 12:16:00
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+  GET /clientes?page=1&limit=2 -> HTTP 200 (4008 ms) (elementos devueltos: 23)
+  [NO CUMPLE] El listado admite paginación (limit=2 devuelve ≤ 2 elementos) — devolvió 23
+  GET /clientes/search?name=… -> HTTP 200 (3 ms) [{"id":"23","nombre":"Lista 1793286948 1","correo":"lst1_1793286948@atlasfake.com","telefono":null,"
+  [CUMPLE] El filtro por nombre devuelve el cliente buscado
+  PUT /clientes/22 -> HTTP 200 (6 ms) 
+  [CUMPLE] Edición correcta (200)
+  DELETE /clientes/24 -> HTTP 200 (3 ms) {"deleted":true}
+  Filas con id=24 tras DELETE: 0
+  [NO CUMPLE] Eliminación lógica: el registro sigue en la BD con marca de baja — el registro fue borrado físicamente
+
+VEREDICTO: Fallido  (2/4 criterios cumplidos)

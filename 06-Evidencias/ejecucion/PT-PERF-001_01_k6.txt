@@ -1,0 +1,70 @@
+Caso: PT-PERF-001 — Tiempo de respuesta de operaciones CRUD (NFR-PERF-1)
+Herramienta: k6 v2.3.0, script 03-Anexos/Herramientas/k6/crud_latencia.js
+Carga: 20 usuarios virtuales durante 2 min (CRUD) + 30 logins secuenciales. Entorno: Docker local.
+
+RESUMEN POR ENDPOINT (p95 frente al umbral de 300 ms):
+  GET /clientes                p95 =   4024.8 ms   avg =   4008.9 ms   max =   4087.4 ms
+  POST /clientes               p95 =     30.8 ms   avg =     11.5 ms   max =     69.9 ms
+  PUT /clientes                p95 =     23.4 ms   avg =      9.0 ms   max =     40.9 ms
+  DELETE /clientes             p95 =     17.8 ms   avg =      6.9 ms   max =     29.0 ms
+  POST /autenticacion/login    p95 =   4010.4 ms   avg =   4008.4 ms   max =   4057.0 ms
+
+SALIDA DE k6:
+█ THRESHOLDS 
+
+    http_req_duration{name:DELETE /clientes}
+    ✓ 'p(95)<300' p(95)=17.75ms
+
+    http_req_duration{name:GET /clientes}
+    ✗ 'p(95)<300' p(95)=4.02s
+
+    http_req_duration{name:POST /clientes}
+    ✓ 'p(95)<300' p(95)=30.77ms
+
+    http_req_duration{name:POST /login}
+    ✗ 'p(95)<300' p(95)=4.01s
+
+    http_req_duration{name:PUT /clientes}
+    ✓ 'p(95)<300' p(95)=23.38ms
+
+    http_req_failed
+    ✓ 'rate<0.01' rate=0.00%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 510     4.073603/s
+    checks_succeeded...: 100.00% 510 out of 510
+    checks_failed......: 0.00%   0 out of 510
+
+    ✓ login 200
+    ✓ crear 201
+
+    HTTP
+    http_req_duration..............: avg=1.05s   min=1.31ms med=10.62ms max=4.08s   p(90)=4s      p(95)=4.01s  
+      { expected_response:true }...: avg=1.05s   min=1.31ms med=10.62ms max=4.08s   p(90)=4s      p(95)=4.01s  
+      { name:DELETE /clientes }....: avg=6.89ms  min=1.31ms med=4.43ms  max=29.04ms p(90)=15.35ms p(95)=17.75ms
+      { name:GET /clientes }.......: avg=4s      min=4s     med=4s      max=4.08s   p(90)=4.01s   p(95)=4.02s  
+      { name:POST /clientes }......: avg=11.49ms min=1.65ms med=8.6ms   max=69.88ms p(90)=24ms    p(95)=30.77ms
+      { name:POST /login }.........: avg=4s      min=4s     med=4s      max=4.05s   p(90)=4s      p(95)=4.01s  
+      { name:PUT /clientes }.......: avg=9.03ms  min=1.56ms med=7.1ms   max=40.86ms p(90)=19.03ms p(95)=23.38ms
+    http_req_failed................: 0.00%  0 out of 1951
+    http_reqs......................: 1951   15.58353/s
+
+    EXECUTION
+    iteration_duration.............: avg=4.97s   min=4s     med=5.02s   max=5.16s   p(90)=5.06s   p(95)=5.08s  
+    iterations.....................: 510    4.073603/s
+    vus............................: 9      min=0         max=21
+    vus_max........................: 21     min=21        max=21
+
+    NETWORK
+    data_received..................: 20 MB  156 kB/s
+    data_sent......................: 811 kB 6.5 kB/s
+
+
+
+
+running (2m05.2s), 00/21 VUs, 510 complete and 0 interrupted iterations
+crud  ✓ [ 100% ] 20 VUs  2m0s         
+login ✓ [ 100% ] 1 VUs   2m00.3s/5m0s  30/30 iters, 30 per VU
+time="2026-10-29T12:19:13-03:00" level=error msg="thresholds on metrics 'http_req_duration{name:GET /clientes}, http_req_duration{name:POST /login}' have been crossed"

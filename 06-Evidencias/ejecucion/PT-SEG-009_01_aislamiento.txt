@@ -1,0 +1,22 @@
+Caso: PT-SEG-009 — Aislamiento entre empresas (IDOR)
+Requerimiento(s): RB-2
+Tipo: Seguridad (autorización)
+Inicio: 2026-10-29 12:54:18   Fin: 2026-10-29 12:54:18
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+Recursos de la empresa A: cliente 11387, contrato 37. Actor: usuario administrador de la empresa B.
+  GET /clientes/11387 -> HTTP 404 (2 ms) [empresa B] '{"error":"No encontrado"}'
+  GET /contratos/37 -> HTTP 200 (1 ms) [empresa B] ACCESIBLE '{"id":"37","cliente_id":"11387","titulo":"Contrato base","de'
+  GET /contratos/37/file -> HTTP 200 (2 ms) [empresa B] ACCESIBLE '%PDF-1.4\n�����A\x14��.��N���\x19\x7f�/\tq"i�\x06K�堉�\x1b�\x19�\'�\x02�\x04\x1c��?��XC\x1d��T'
+  PUT /clientes/11387 -> HTTP 404 (1 ms) [empresa B] '{"error":"No encontrado"}'
+  GET /auditoria -> HTTP 200 (89 ms) [empresa B] ACCESIBLE '[{"id":"23367","usuario_id":"admin","accion":"CONTRATOS_CREA'
+  GET /contratos/37/file -> HTTP 200 (2 ms) [sin token] ACCESIBLE '%PDF-1.4\n�����A\x14��.��N���\x19\x7f�/\tq"i�\x06K�堉�\x1b�\x19�\'�\x02�\x04\x1c��?��XC\x1d��T'
+  GET /contratos/37 -> HTTP 200 (1 ms) [sin token] ACCESIBLE '{"id":"37","cliente_id":"11387","titulo":"Contrato base","de'
+  POST /contratos -> HTTP 201 (4 ms) [empresa B] ACCESIBLE '{"id":"38","cliente_id":"11387","titulo":"Contrato intruso 1'
+  POST /contratos -> HTTP 500 (2 ms) [sin token] '{"error":"Error al crear contrato","glosa":"null value in co'
+  Contratos "intruso" persistidos en la BD (creados por la empresa B y sin token): 2 (el POST sin token responde 500 al auditar, pero el INSERT ya se ejecutó)
+  /auditoria con token de B muestra acciones de otros usuarios: ['admin', 'editor', 'qa_adm_1793286817', 'qa_b_1793286817', 'qa_b_1793286948', 'qa_b_1793286996']
+  Nombre actual del cliente de A tras el PUT de B: 'Cliente Base 1793289250'
+  [NO CUMPLE] 0 recursos de otra empresa accesibles o modificables — 6/9 accesos permitidos
+
+VEREDICTO: Fallido  (0/1 criterios cumplidos)

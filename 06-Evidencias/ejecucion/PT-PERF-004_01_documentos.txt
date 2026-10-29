@@ -1,0 +1,20 @@
+Caso: PT-PERF-004 — Subida y descarga de documentos ≤ 10 s
+Requerimiento(s): Criterio de aceptación de RF-5
+Tipo: Rendimiento
+Inicio: 2026-10-29 12:20:15   Fin: 2026-10-29 12:20:16
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+  Repetición 1: subida 38 ms (HTTP 201), descarga 62 ms (HTTP 200, 5120 KB)
+  Repetición 2: subida 39 ms (HTTP 201), descarga 56 ms (HTTP 200, 5120 KB)
+  Repetición 3: subida 39 ms (HTTP 201), descarga 51 ms (HTTP 200, 5120 KB)
+  Repetición 4: subida 34 ms (HTTP 201), descarga 54 ms (HTTP 200, 5120 KB)
+  Repetición 5: subida 38 ms (HTTP 201), descarga 47 ms (HTTP 200, 5120 KB)
+  Repetición 6: subida 36 ms (HTTP 201), descarga 49 ms (HTTP 200, 5120 KB)
+  Repetición 7: subida 39 ms (HTTP 201), descarga 51 ms (HTTP 200, 5120 KB)
+  Repetición 8: subida 35 ms (HTTP 201), descarga 52 ms (HTTP 200, 5120 KB)
+  Repetición 9: subida 34 ms (HTTP 201), descarga 49 ms (HTTP 200, 5120 KB)
+  Repetición 10: subida 40 ms (HTTP 201), descarga 50 ms (HTTP 200, 5120 KB)
+  Subida: máx 40 ms, prom 37 ms | Descarga: máx 62 ms, prom 52 ms
+  [CUMPLE] 100 % de las operaciones de subida y descarga de un PDF de 5 MB ≤ 10 s — máximos: subida 40 ms, descarga 62 ms (entorno local)
+
+VEREDICTO: Aprobado  (1/1 criterios cumplidos)

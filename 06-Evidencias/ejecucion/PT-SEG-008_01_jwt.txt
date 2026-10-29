@@ -1,0 +1,19 @@
+Caso: PT-SEG-008 — Sesión JWT: expiración, firma y secreto
+Requerimiento(s): NFR-SEG-9
+Tipo: Seguridad (sesión)
+Inicio: 2026-10-29 12:14:31   Fin: 2026-10-29 12:14:47
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+1) JWT_SECRET efectivo en el contenedor del backend: "your-secret-key-change-in-production"
+  [NO CUMPLE] El secreto JWT es robusto y no es un valor por defecto público — valor: your-secret-key-change-in-production
+  GET /clientes -> HTTP 200 (4007 ms) (token forjado con el secreto por defecto del docker-compose)
+  [NO CUMPLE] Un token firmado con el secreto por defecto es rechazado — HTTP 200
+  Token con firma alterada -> 401
+  [CUMPLE] Un token con firma alterada es rechazado
+  Token con alg=none -> 401
+  [CUMPLE] Un token con alg=none es rechazado
+  Token expirado (firmado correctamente) -> 401
+  [CUMPLE] Un token expirado es rechazado
+  [CUMPLE] El tiempo de vida del token es acotado (≤ 2 h) — 7200 s
+
+VEREDICTO: Fallido  (4/6 criterios cumplidos)

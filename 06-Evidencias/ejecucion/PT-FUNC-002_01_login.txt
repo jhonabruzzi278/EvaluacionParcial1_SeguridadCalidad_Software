@@ -1,0 +1,19 @@
+Caso: PT-FUNC-002 — Autenticación y emisión de JWT
+Requerimiento(s): RF-1.1
+Tipo: Funcional
+Inicio: 2026-10-29 12:13:45   Fin: 2026-10-29 12:14:01
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+1) Login válido (admin)
+  POST /autenticacion/login -> HTTP 200 (4009 ms) (credenciales válidas)
+  Payload JWT: {"usuarioId": "1", "nombreUsuario": "admin", "empresaUsuarioId": "1", "empresaId": "1", "iat": 1793286829, "exp": 1793294029}
+  [CUMPLE] Login válido responde 200 con JWT
+  [CUMPLE] El JWT incluye expiración (exp) — exp=1793294029
+2) Login inválido y vacío
+  POST /autenticacion/login -> HTTP 401 (4005 ms) (contraseña incorrecta)  {"error":"Credenciales inválidas"}
+  POST /autenticacion/login -> HTTP 401 (4006 ms) (usuario inexistente)  {"error":"Credenciales inválidas"}
+  POST /autenticacion/login -> HTTP 401 (4006 ms) (cuerpo vacío)  {"error":"Credenciales inválidas"}
+  [CUMPLE] 100 % de credenciales inválidas rechazadas con 401 — 401/401/401
+  Observación: Latencia del login medida: 4009 ms (el ERS exige < 300 ms; ver PT-PERF-001).
+
+VEREDICTO: Aprobado  (3/3 criterios cumplidos)

@@ -1,0 +1,45 @@
+Caso: PT-COMP-001 — Responsividad en móviles y tablets
+Requerimiento(s): NFR-COMPAT-2
+Tipo: Compatibilidad (responsiva)
+Inicio: 2026-10-29 12:34:08   Fin: 2026-10-29 12:36:09
+Entorno: Docker local (frontend http://localhost:3350), Chrome headless Google Chrome 156.0.8078.73
+
+Emulación de dispositivo en Chrome (DevTools). Medición: scrollWidth > innerWidth = desborde horizontal.
+Resolución 360x780:
+  /login                 scroll horizontal: 0 px | elementos fuera del viewport (recortados): 0 | ancho del menú lateral: 0 px | objetivos < 44 px: 4
+  /registro              scroll horizontal: 0 px | elementos fuera del viewport (recortados): 0 | ancho del menú lateral: 0 px | objetivos < 44 px: 4
+  /home                  scroll horizontal: 0 px | elementos fuera del viewport (recortados): 26 | ancho del menú lateral: 239 px | objetivos < 44 px: 2
+  /clientes              scroll horizontal: 0 px | elementos fuera del viewport (recortados): 321 | ancho del menú lateral: 239 px | objetivos < 44 px: 35
+  /clientes/nuevo        scroll horizontal: 0 px | elementos fuera del viewport (recortados): 129 | ancho del menú lateral: 239 px | objetivos < 44 px: 7
+  /contratos             scroll horizontal: 0 px | elementos fuera del viewport (recortados): 413 | ancho del menú lateral: 239 px | objetivos < 44 px: 49
+  /contratos/33          scroll horizontal: 0 px | elementos fuera del viewport (recortados): 0 | ancho del menú lateral: 239 px | objetivos < 44 px: 4
+Resolución 390x844:
+  /login                 scroll horizontal: 0 px | elementos fuera del viewport (recortados): 0 | ancho del menú lateral: 0 px | objetivos < 44 px: 4
+  /registro              scroll horizontal: 0 px | elementos fuera del viewport (recortados): 0 | ancho del menú lateral: 0 px | objetivos < 44 px: 4
+  /home                  scroll horizontal: 0 px | elementos fuera del viewport (recortados): 19 | ancho del menú lateral: 239 px | objetivos < 44 px: 2
+  /clientes              scroll horizontal: 0 px | elementos fuera del viewport (recortados): 312 | ancho del menú lateral: 239 px | objetivos < 44 px: 35
+  /clientes/nuevo        scroll horizontal: 0 px | elementos fuera del viewport (recortados): 121 | ancho del menú lateral: 239 px | objetivos < 44 px: 7
+  /contratos             scroll horizontal: 0 px | elementos fuera del viewport (recortados): 408 | ancho del menú lateral: 239 px | objetivos < 44 px: 49
+  /contratos/33          scroll horizontal: 0 px | elementos fuera del viewport (recortados): 0 | ancho del menú lateral: 239 px | objetivos < 44 px: 4
+Resolución 820x1180:
+  /login                 scroll horizontal: 0 px | elementos fuera del viewport (recortados): 0 | ancho del menú lateral: 0 px | objetivos < 44 px: 4
+  /registro              scroll horizontal: 0 px | elementos fuera del viewport (recortados): 0 | ancho del menú lateral: 0 px | objetivos < 44 px: 4
+  /home                  scroll horizontal: 0 px | elementos fuera del viewport (recortados): 0 | ancho del menú lateral: 239 px | objetivos < 44 px: 4
+  /clientes              scroll horizontal: 0 px | elementos fuera del viewport (recortados): 169 | ancho del menú lateral: 239 px | objetivos < 44 px: 35
+  /clientes/nuevo        scroll horizontal: 0 px | elementos fuera del viewport (recortados): 0 | ancho del menú lateral: 239 px | objetivos < 44 px: 7
+  /contratos             scroll horizontal: 0 px | elementos fuera del viewport (recortados): 273 | ancho del menú lateral: 239 px | objetivos < 44 px: 49
+  /contratos/33          scroll horizontal: 0 px | elementos fuera del viewport (recortados): 0 | ancho del menú lateral: 239 px | objetivos < 44 px: 4
+Resolución 1366x768:
+  /login                 scroll horizontal: 0 px | elementos fuera del viewport (recortados): 0 | ancho del menú lateral: 0 px | objetivos < 44 px: 4
+  /registro              scroll horizontal: 0 px | elementos fuera del viewport (recortados): 0 | ancho del menú lateral: 0 px | objetivos < 44 px: 4
+  /home                  scroll horizontal: 0 px | elementos fuera del viewport (recortados): 0 | ancho del menú lateral: 239 px | objetivos < 44 px: 4
+  /clientes              scroll horizontal: 0 px | elementos fuera del viewport (recortados): 4 | ancho del menú lateral: 239 px | objetivos < 44 px: 35
+  /clientes/nuevo        scroll horizontal: 0 px | elementos fuera del viewport (recortados): 0 | ancho del menú lateral: 239 px | objetivos < 44 px: 7
+  /contratos             scroll horizontal: 0 px | elementos fuera del viewport (recortados): 67 | ancho del menú lateral: 239 px | objetivos < 44 px: 49
+  /contratos/33          scroll horizontal: 0 px | elementos fuera del viewport (recortados): 0 | ancho del menú lateral: 239 px | objetivos < 44 px: 4
+  [NO CUMPLE] 0 desbordes horizontales ni contenido recortado en las 4 resoluciones — 12 de 28 combinaciones página/resolución con contenido fuera del viewport
+  [NO CUMPLE] El menú de navegación se adapta al ancho móvil (no ocupa más del 40 % del ancho) — 10 casos; p. ej. 360x780 /home: menú de 239 px sobre 360 px de ancho
+  [NO CUMPLE] Elementos táctiles ≥ 44×44 px (resoluciones móviles) — 317 elementos < 44 px sumados en las resoluciones móviles
+  [NO EVALUADO] Flujos críticos (login, crear cliente, ver contrato) completables en móvil — se verificó la presentación de las pantallas; la ejecución completa de los flujos con interacción táctil no se automatizó
+
+VEREDICTO: Fallido  (0/3 criterios evaluados cumplidos; 1 no evaluados)

@@ -1,0 +1,24 @@
+Caso: PT-FUNC-001 — Flujo completo de contrato con documento adjunto
+Requerimiento(s): RF-5.1, RF-5.2, RF-5.3, RB-3
+Tipo: Funcional E2E
+Inicio: 2026-10-29 12:13:45   Fin: 2026-10-29 12:13:45
+Entorno: Docker local (atlas-backend/atlas-frontend/atlas-postgres), API http://localhost:4450
+
+  POST /clientes -> HTTP 201 (3 ms) cliente_id=4
+  POST /contratos -> HTTP 201 (10 ms) contrato_id=4 cliente_id=4 (subida contrato.pdf 683 KB)
+  [CUMPLE] Contrato creado con 201 y asociado a un único cliente (RB-3)
+  GET /contratos/4/file -> HTTP 200 (12 ms) sha256 original=5d91ac707e2687b6… descargado=5d91ac707e2687b6…
+  [CUMPLE] El archivo descargado es idéntico al subido (mismo hash sha256)
+  [CUMPLE] Subida y descarga completadas en ≤ 10 s — subida 10 ms + descarga 12 ms
+  POST /contratos -> HTTP 201 (4 ms) (archivo macro.exe)
+  [NO CUMPLE] Solo se aceptan PDF, DOC, PPT, JPG y PNG: macro.exe devuelve 4xx — HTTP 201: el ejecutable fue aceptado
+  POST /contratos -> HTTP 201 (204 ms) (archivo de 30 MB)
+  [NO CUMPLE] Existe y se aplica un límite de tamaño de archivo (400/413) — HTTP 201: archivo de 30 MB aceptado
+  BD documentos_contrato (contract_id|bytes): 4|700015
+  [NO CUMPLE] El documento se guarda en almacenamiento interno y la BD guarda solo la referencia (RF-5.3) — el binario se guarda dentro de la BD (bytea, 700015 bytes)
+  POST /contratos -> HTTP 500 (6 ms) (cliente inexistente) {"error":"Error al crear contrato","glosa":"insert or update on table \"contratos\" violates foreign key const
+  [NO CUMPLE] Cliente inexistente → error 4xx con mensaje controlado y sin contrato huérfano — HTTP 500 con err.message expuesto
+  Auditoría: CONTRATOS_CREAR: creó contrato grande para cliente 4
+  [CUMPLE] Registro de auditoría de la creación del contrato (RF-6.1)
+
+VEREDICTO: Fallido  (4/8 criterios cumplidos)

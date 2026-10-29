@@ -1,5 +1,7 @@
 # 8. Ejecución de Pruebas
 
+> **Estado actual (29-oct-2026):** los 30 casos del plan completo se ejecutaron en el Docker local de Atlas (27 ejecutados: 7 aprobados, 20 fallidos; 3 no ejecutados). El informe final presenta 10 casos priorizados (1 aprobado, 9 fallidos, 12 incidentes). La evidencia por caso, `resultados_ejecucion.json` y `resumen_ejecucion.md` están en `06-Evidencias/ejecucion/`; el informe final (`04-Entrega/EP3/`) recoge los resultados. Las secciones 2 a 2c de este archivo son el registro histórico de las verificaciones previas.
+
 > **Regla de oro:** solo se registra lo que se ejecutó. Un caso no ejecutado figura como `No ejecutado`, nunca como `Aprobado`. Cada resultado debe tener evidencia en `06-Evidencias/` (captura legible o log) referenciada por nombre de archivo.
 
 ## 1. Escala de criticidad de incidentes
@@ -15,25 +17,25 @@ Cada incidente se clasifica además por **tipo de defecto** (funcional, segurida
 
 ## 2. Resumen de ejecución
 
-*(Completar tras ejecutar. Cifras actuales: ninguna prueba dinámica ejecutada.)*
+*Plan completo de 30 casos. Detalle por caso en `06-Evidencias/ejecucion/resumen_ejecucion.md`.*
 
 | Métrica | Valor |
 |---|---|
 | Casos diseñados | 30 |
-| Casos ejecutados | 0 |
-| Aprobados | — |
-| Fallidos | — |
-| Bloqueados | — |
-| No ejecutados | 30 |
+| Casos ejecutados | 27 |
+| Aprobados | 7 |
+| Fallidos | 20 |
+| Bloqueados | 0 |
+| No ejecutados | 3 (PT-USAB-002, PT-USAB-003, PT-COMP-002) |
 | Cobertura de diseño (requerimientos con caso) | 42/42 (100 %) |
-| Cobertura de ejecución | 0/42 |
-| Incidentes abiertos (Crítica / Alta / Media / Baja) | — |
+| Cobertura de ejecución | 27/30 casos (90 %); 36 de 38 endpoints |
+| Incidentes abiertos del plan completo (Crítica / Alta / Media / Baja) | 22 (4 / 8 / 9 / 1) |
 
-**Entorno de ejecución oficial** *(completar en el taller):* equipo, SO, versión de Docker, comando, fecha, commit/versión del código, URL del front/back.
+**Entorno de ejecución:** equipo Linux Mint 22.3, Docker Compose (postgres:15-alpine, backend Node 18, frontend nginx), 29-oct-2026, frontend http://localhost:3350 y API http://localhost:4450, sobre una copia de `CodigoFuenteA` con `package-lock.json` generado.
 
-## 2b. Resultados preliminares (entorno temporal, fuera del taller)
+## 2b. Verificaciones previas (entorno temporal; superadas por la ejecución en Docker)
 
-> **Qué es esto y qué no es.** Antes de la sesión en el taller se verificaron manualmente 8 puntos de alto riesgo contra el mismo código fuente y el mismo `dump-atlas.sql`, levantados en un entorno temporal de desarrollo (Node + PostgreSQL nativos, **no el `docker compose` oficial**). Son datos reales, no simulados, pero **no reemplazan la ejecución oficial**: deben reconfirmarse en el stack Docker del taller y documentarse ahí con captura/log en `06-Evidencias/`. Se registran aquí para no perder el hallazgo y para orientar qué priorizar en el taller.
+> **Contexto.** Antes de levantar el stack con Docker se verificaron manualmente 8 puntos de alto riesgo en un entorno temporal (Node + PostgreSQL nativos). Esas verificaciones quedaron **superadas por la ejecución en Docker** del 29-oct-2026, cuya evidencia está en `06-Evidencias/ejecucion/`; se conservan como historial.
 
 | # | Verificación | Comando (resumen) | Resultado real | Hallazgo que confirma |
 |---|---|---|---|---|
@@ -49,6 +51,8 @@ Cada incidente se clasifica además por **tipo de defecto** (funcional, segurida
 **Incidentes que estos resultados sustentan (a formalizar como INC-xxx tras la ejecución oficial):** ausencia de control de rol en el backend (puntos 1–3, criticidad propuesta: Crítica), exposición de auditoría sin autenticación (punto 4, Alta), ausencia de política de contraseñas (punto 6, Media), ausencia de cierre de sesión en el servidor (punto 7, Alta).
 
 ## 2c. Análisis estático con SonarQube (resultado real, entorno temporal)
+
+> **Actualización (29-oct-2026):** el análisis se repitió con SonarQube en **Docker** (`sonarqube:community` 26.10.0.133078 + `sonar-scanner-cli`) sobre una copia del código con dependencias instaladas, con los mismos resultados (4 vulnerabilidades, 25 bugs, 9 code smells, Quality Gate OK) y evidencia guardada en `06-Evidencias/estatico/`. Sin dependencias instaladas SonarQube reporta solo 10 bugs (la regla S9383 necesita información de tipos). El texto siguiente se conserva como registro de la corrida inicial.
 
 > Mismo tipo de advertencia que en §2b: SonarQube Community 26.10.0.133078 se ejecutó de forma **standalone** (Java, sin Docker) contra `CodigoFuenteA/BACKEND/src` y `CodigoFuenteA/FRONTEND/src` reales, sin modificarlos. Es la herramienta SAST oficial del plan (`03-Anexos/Herramientas/README.md` §1). El resultado es real y queda exportado como evidencia en `06-Evidencias/estatico/` (métricas, vulnerabilidades, bugs y code smells en JSON), pero debe **repetirse en el taller** con el Docker oficial para el informe final, dejando también capturas de pantalla del dashboard.
 
@@ -77,7 +81,7 @@ Los 25 bugs son mayoritariamente del frontend (promesas sin `await`/`.catch` en 
 
 **Lectura para el informe (IE6/EP4):** SonarQube confirma con una herramienta independiente 3 de los hallazgos obtenidos por revisión manual (H-08, H-10, H-11), y marca el de credenciales por defecto como **Blocker** — el nivel más alto de su escala, coherente con la criticidad "Crítica/Alta" que ya le habíamos asignado. Cero *security hotspots* detectados no significa ausencia de más vulnerabilidades: la edición Community no incluye *taint analysis* (ver `03-Anexos/Herramientas/README.md` §1), por lo que H-01, H-02, H-12, H-17, H-19 (todos de lógica de autorización) no son detectables por esta herramienta y siguen dependiendo de los casos de prueba dinámicos.
 
-**Pendiente de esta ejecución preliminar:** no se guardó evidencia en `06-Evidencias/` porque el entorno era temporal y ya fue desmontado. Repetir los 8 puntos en el taller **con captura/log** antes de citarlos como resultado oficial en el informe.
+**Nota:** estos 8 puntos no guardaron evidencia; los mismos hallazgos se reconfirmaron con evidencia en la ejecución en Docker (PT-SEG-001, 002, 008, 009 y PT-FUNC-010, entre otros).
 
 ## 3. Detalle de ejecución por caso
 

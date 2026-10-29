@@ -1,0 +1,40 @@
+Caso: PT-PERF-003 — 200 usuarios concurrentes (NFR-PERF-3)
+Herramienta: k6 v2.3.0, script 03-Anexos/Herramientas/k6/crud_200vu.js
+Carga: rampa a 200 VUs en 1 min y 4 min sostenidos (5 min). Entorno: Docker local.
+
+Peticiones: 32626; fallos HTTP: 0.00 %; duración p95 = 4005 ms, máx = 4027 ms
+
+SALIDA DE k6:
+█ THRESHOLDS 
+
+    http_req_failed
+    ✓ 'rate<0.01' rate=0.00%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 21750   70.385269/s
+    checks_succeeded...: 100.00% 21750 out of 21750
+    checks_failed......: 0.00%   0 out of 21750
+
+    ✓ listar 200
+    ✓ crear 201
+
+    HTTP
+    http_req_duration..............: avg=1.33s min=1.27ms med=4.43ms max=4.02s p(90)=4s    p(95)=4s   
+      { expected_response:true }...: avg=1.33s min=1.27ms med=4.43ms max=4.02s p(90)=4s    p(95)=4s   
+    http_req_failed................: 0.00%  0 out of 32626
+    http_reqs......................: 32626  105.581139/s
+
+    EXECUTION
+    iteration_duration.............: avg=5.01s min=5s     med=5.01s  max=5.05s p(90)=5.02s p(95)=5.02s
+    iterations.....................: 10875  35.192634/s
+    vus............................: 15     min=0          max=200
+    vus_max........................: 200    min=200        max=200
+
+    NETWORK
+    data_received..................: 432 MB 1.4 MB/s
+    data_sent......................: 13 MB  42 kB/s
+
+
+
