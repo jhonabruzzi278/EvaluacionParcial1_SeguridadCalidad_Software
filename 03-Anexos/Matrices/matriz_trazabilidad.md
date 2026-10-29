@@ -1,76 +1,147 @@
-# Anexo: Matriz de Trazabilidad
+# Anexo: Matriz de Trazabilidad v2 (reconstruida contra el ERS)
 
-## RF - Requerimientos Funcionales
+**Fuente de verdad:** `01-Documentos_Base/SRS_Atlas_384735328.pdf` v1.1 (§3.2 RF, §3.3 NFR, §3.4 RB).
+**Cambio respecto de v1:** la v1 contaba 6 "RF" y describía varios NFR/RB de forma distinta al ERS. Esta versión usa los **42 requerimientos reales** (17 RF + 20 NFR + 5 RB) más los 2 criterios de aceptación de interfaz (§3.1.1 y §3.1.2). Cobertura objetivo exigida por EP3: **100 %**.
 
-| ID Requerimiento | Descripcion | Caso de Prueba | Tipo de Prueba | Resultado Esperado | Estado |
-|------------------|-------------|----------------|----------------|-------------------|--------|
-| RF-1 | Autenticacion de usuarios con JWT | PT-FUNC-001, PT-SEG-002 | Funcional, Seguridad | Login exitoso con credenciales validas; rechazo con credenciales invalidas | Pendiente |
-| RF-2 | Registro de nuevos usuarios y asignacion de roles | PT-FUNC-001, PT-SEG-002 | Funcional, Seguridad | Usuario creado con rol correcto; validacion de campos obligatorios | Pendiente |
-| RF-3 | Gestion de clientes (CRUD) | PT-FUNC-001, PT-SEG-002, PT-PERF-001 | Funcional, Seguridad, Rendimiento | CRUD completo funcionando; control de acceso por rol; tiempos < 300ms | Pendiente |
-| RF-4 | Gestion de contratos (CRUD) | PT-FUNC-001 | Funcional | Contrato creado, actualizado, consultado y eliminado correctamente | Pendiente |
-| RF-5 | Gestion de documentos asociados a contratos | PT-FUNC-001, PT-SEG-001 | Funcional, Seguridad | Documento subido, almacenado y descargable; sanitizacion de archivos | Pendiente |
-| RF-6 | Auditoria y registro de acciones | PT-FUNC-001, PT-SEG-002 | Funcional, Seguridad | Logs generados para acciones sensibles; consulta de auditoria funciona | Pendiente |
+**Estado:** `Pendiente` = diseñado, aún no ejecutado. No se ha ejecutado ninguna prueba dinámica; los resultados reales deben registrarse en `02-Informe/08-Ejecucion_Pruebas/registro_ejecucion.md`.
+**Columna "Hallazgo estático":** señala un incumplimiento *probable* según `09-Analisis_Estatico`; es una hipótesis que la prueba debe confirmar o refutar, no un resultado.
 
-## NFR-SEG - Requerimientos de Seguridad
+## 1. Requerimientos funcionales (17)
 
-| ID Requerimiento | Descripcion | Caso de Prueba | Tipo de Prueba | Resultado Esperado | Estado |
-|------------------|-------------|----------------|----------------|-------------------|--------|
-| NFR-SEG-1 | Comunicaciones cifradas con TLS | PT-SEG-001 | Seguridad | Certificado TLS valido; conexion HTTPS obligatoria; no se permite HTTP | Pendiente |
-| NFR-SEG-2 | Hashing de contraseñas con bcrypt | PT-SEG-001 | Seguridad | Contraseñas almacenadas como hash bcrypt; nunca en texto plano | Pendiente |
-| NFR-SEG-3 | Tokens JWT con expiracion | PT-SEG-002 | Seguridad | Token expira despues del tiempo configurado; refresh token funciona | Pendiente |
-| NFR-SEG-4 | Control de acceso basado en roles (RBAC) | PT-SEG-002 | Seguridad | Admin tiene todos los permisos; Editor solo lectura; accesos no autorizados rechazados | Pendiente |
-| NFR-SEG-5 | Proteccion contra CSRF, XSS, SQL Injection | PT-SEG-002 | Seguridad | Payloads maliciosos son sanitizados o rechazados; sin ejecucion de scripts | Pendiente |
-| NFR-SEG-6 | Manejo seguro de errores | PT-FUNC-001 | Seguridad, Funcional | Errores no revelan informacion interna del sistema (stack traces, queries) | Pendiente |
-| NFR-SEG-7 | Registro de auditoria de acciones sensibles | PT-FUNC-001, PT-SEG-002 | Seguridad, Funcional | Cada accion critica queda registrada con timestamp, usuario, IP | Pendiente |
-| NFR-SEG-8 | Cumplimiento de normativas de proteccion de datos | PT-SEG-001, PT-USAB-001 | Seguridad, Usabilidad | Datos personales protegidos; politica de privacidad visible; consentimiento | Pendiente |
-| NFR-SEG-9 | Sanitizacion de archivos subidos | PT-FUNC-001 | Seguridad, Funcional | Solo formatos permitidos (PDF, DOCX, JPG); sin ejecucion de archivos maliciosos | Pendiente |
+| ID ERS | Requerimiento (resumen del ERS) | Caso(s) | Tipo | Hallazgo estático | Estado |
+|---|---|---|---|---|---|
+| RF-1.1 | Autenticación con nombre_usuario y contraseña; login genera JWT | PT-FUNC-002 | Funcional | H-05 | Pendiente |
+| RF-1.2 | Cierre de sesión y revocación de tokens | PT-FUNC-003 | Funcional / Seguridad | H-04 | Pendiente |
+| RF-2.1 | Registro con usuario, contraseña y correo | PT-FUNC-004 | Funcional | H-15 | Pendiente |
+| RF-2.2 | Usuario registrado crea empresa (nombre, dirección, teléfono, correo) | PT-FUNC-005 | Funcional | — | Pendiente |
+| RF-2.3 | Primer usuario de la empresa obtiene rol administrador | PT-FUNC-005 | Funcional | — | Pendiente |
+| RF-3.1 | Administrador crea/invita usuarios y asigna rol | PT-FUNC-006 | Funcional | H-02 | Pendiente |
+| RF-3.2 | Rol editor solo visualiza | PT-SEG-002 | Seguridad (autorización) | H-02 | Pendiente |
+| RF-3.3 | Administrador modifica o elimina usuarios | PT-FUNC-006 | Funcional | H-06 | Pendiente |
+| RF-4.1 | Crear clientes (nombre, descripción, dirección, contacto) | PT-FUNC-007 | Funcional | — | Pendiente |
+| RF-4.2 | Editar, eliminar y listar clientes (paginación, filtro por nombre) | PT-FUNC-008 | Funcional | H-06 | Pendiente |
+| RF-4.3 | Validaciones de campos y formato | PT-FUNC-007 | Funcional | — | Pendiente |
+| RF-5.1 | Crear contratos asociados a cliente (título, descripción, fechas) | PT-FUNC-001 | Funcional (E2E) | H-12 | Pendiente |
+| RF-5.2 | Adjuntar un documento por contrato (PDF, DOC, PPT, JPG, PNG) | PT-FUNC-001 | Funcional | H-08 | Pendiente |
+| RF-5.3 | Documentos en storage interno referenciado en BD | PT-FUNC-001 | Funcional | H-08 | Pendiente |
+| RF-5.4 | Estado del contrato (activo / vence / expirado) por fechas | PT-FUNC-009 | Funcional | — | Pendiente |
+| RF-5.5 | Generar enlace para compartir el documento y gestionar su acceso | PT-FUNC-009 | Funcional / Seguridad | H-18 | Pendiente |
+| RF-6.1 | Auditar acciones críticas (crear/editar/eliminar; subir/descargar documentos) | PT-FUNC-010 | Funcional | H-19 | Pendiente |
 
-## NFR-PERF - Requerimientos de Rendimiento
+## 2. Seguridad (9)
 
-| ID Requerimiento | Descripcion | Caso de Prueba | Tipo de Prueba | Resultado Esperado | Estado |
-|------------------|-------------|----------------|----------------|-------------------|--------|
-| NFR-PERF-1 | Operaciones CRUD < 300ms | PT-PERF-001 | Rendimiento | 95% de peticiones responden en < 300ms bajo carga normal | Pendiente |
-| NFR-PERF-2 | Carga de pagina < 2 segundos | PT-PERF-001 | Rendimiento | First Contentful Paint < 1.5s; Largest Contentful Paint < 2s | Pendiente |
-| NFR-PERF-3 | Soporte a 200 usuarios concurrentes | PT-PERF-001 | Rendimiento | Sistema estable con 200 usuarios simultaneos; sin errores 5xx | Pendiente |
+| ID ERS | Requerimiento | Caso(s) | Tipo | Hallazgo estático | Estado |
+|---|---|---|---|---|---|
+| NFR-SEG-1 | TLS obligatorio en todas las comunicaciones | PT-SEG-003 | Seguridad (DAST/config.) | H-09 | Pendiente |
+| NFR-SEG-2 | Contraseñas con hashing seguro (bcrypt) | PT-SEG-001 | Seguridad (SAST + BD) | H-01, H-15 | Pendiente |
+| NFR-SEG-3 | Encriptación de datos sensibles en reposo | PT-SEG-004 | Seguridad (BD) | H-13 | Pendiente |
+| NFR-SEG-4 | Control de acceso por rol en backend | PT-SEG-002 | Seguridad (autorización) | H-02 | Pendiente |
+| NFR-SEG-5 | Protección CSRF, XSS, SQL Injection; validación y saneamiento de entrada | PT-SEG-005 | Seguridad (DAST) | H-08, H-10, H-16 | Pendiente |
+| NFR-SEG-6 | Gestión de log segura | PT-SEG-006 | Seguridad | H-07 | Pendiente |
+| NFR-SEG-7 | Políticas de respaldo y recuperación | PT-DIS-001 | Disponibilidad / Recuperación | — | Pendiente |
+| NFR-SEG-8 | Cumplimiento de protección de datos personales | PT-SEG-007 | Seguridad / Normativo | H-01, H-11, H-13 | Pendiente |
+| NFR-SEG-9 | Manejo de sesión con JWT | PT-SEG-008 | Seguridad (sesión) | H-03, H-16 | Pendiente |
 
-## NFR-USAB - Requerimientos de Usabilidad
+## 3. Rendimiento (3 + criterio RF-5)
 
-| ID Requerimiento | Descripcion | Caso de Prueba | Tipo de Prueba | Resultado Esperado | Estado |
-|------------------|-------------|----------------|----------------|-------------------|--------|
-| NFR-USAB-1 | Accesibilidad para adultos mayores | PT-USAB-001 | Usabilidad | Cumplimiento WCAG 2.1 AA; navegacion por teclado; contraste >= 4.5:1 | Pendiente |
-| NFR-USAB-2 | Tiempos de respuesta perceptibles | PT-PERF-001, PT-USAB-001 | Rendimiento, Usabilidad | Feedback visual en < 200ms para acciones del usuario | Pendiente |
-| NFR-USAB-3 | Navegacion intuitiva | PT-USAB-001 | Usabilidad | Usuarios completan tareas core sin asistencia; SUS score >= 70 | Pendiente |
-| NFR-USAB-4 | Mensajes de error claros | PT-USAB-001, PT-FUNC-001 | Usabilidad, Funcional | Mensajes en español; indican causa y solucion; sin codigos tecnicos crudos | Pendiente |
+| ID ERS | Requerimiento | Caso(s) | Tipo | Hallazgo estático | Estado |
+|---|---|---|---|---|---|
+| NFR-PERF-1 | CRUD simples < 300 ms bajo carga normal | PT-PERF-001 | Rendimiento (carga) | H-05 | Pendiente |
+| NFR-PERF-2 | Página principal < 2 s en conexión móvil promedio | PT-PERF-002 | Rendimiento (frontend) | — | Pendiente |
+| NFR-PERF-3 | 200 usuarios concurrentes (por defecto) | PT-PERF-003 | Rendimiento (carga/estrés) | H-05 | Pendiente |
+| Criterio RF-5 | Subida y descarga ≤ 10 s | PT-PERF-004 | Rendimiento | H-08 | Pendiente |
 
-## NFR-COMPAT - Requerimientos de Compatibilidad
+## 4. Usabilidad y accesibilidad (4)
 
-| ID Requerimiento | Descripcion | Caso de Prueba | Tipo de Prueba | Resultado Esperado | Estado |
-|------------------|-------------|----------------|----------------|-------------------|--------|
-| NFR-COMPAT-1 | Soporte Chrome, Firefox, Safari, Edge (ultimas 2 versiones) | PT-COMP-001 | Compatibilidad | Funcionalidades core operan correctamente en todos los navegadores listados | Pendiente |
-| NFR-COMPAT-2 | Dispositivos moviles y tablets (responsive) | PT-COMP-001 | Compatibilidad | Layout adaptativo; sin scroll horizontal; botones tocables >= 44px | Pendiente |
+| ID ERS | Requerimiento | Caso(s) | Tipo | Estado |
+|---|---|---|---|---|
+| NFR-USAB-1 | Tipografía legible, contraste y controles grandes (mayores) | PT-USAB-001 | Usabilidad / Accesibilidad | Pendiente |
+| NFR-USAB-2 | Flujos claros de registro y creación de empresa | PT-USAB-002 | Usabilidad | Pendiente |
+| NFR-USAB-3 | Ayuda contextual y mensajes de error amigables | PT-USAB-003 | Usabilidad | Pendiente |
+| NFR-USAB-4 | Flujo cliente → contratos del cliente | PT-USAB-002 | Usabilidad | Pendiente |
 
-## RB - Reglas de Negocio
+## 5. Disponibilidad y mantenimiento (2)
 
-| ID Regla | Descripcion | Caso de Prueba | Tipo de Prueba | Resultado Esperado | Estado |
-|----------|-------------|----------------|----------------|-------------------|--------|
-| RB-1 | Un usuario pertenece a una unica empresa | PT-FUNC-001 | Funcional | No se permite asignar un usuario a multiples empresas | Pendiente |
-| RB-2 | Solo usuarios vinculados a una empresa pueden ver/editar sus datos | PT-SEG-002 | Seguridad, Funcional | Usuario de Empresa A no accede a datos de Empresa B | Pendiente |
-| RB-3 | Solo usuarios con rol Admin pueden crear/editar/eliminar clientes y contratos | PT-SEG-002 | Seguridad, Funcional | Editor intenta crear cliente -> HTTP 403 | Pendiente |
-| RB-4 | Los documentos solo son visibles para usuarios de la misma empresa | PT-SEG-002, PT-FUNC-001 | Seguridad, Funcional | Usuario externo no descarga documentos de otra empresa | Pendiente |
-| RB-5 | El RUT chileno debe ser validado con algoritmo modulo 11 | PT-FUNC-001 | Funcional | RUT invalido es rechazado antes de guardar en BD | Pendiente |
+| ID ERS | Requerimiento | Caso(s) | Tipo | Estado |
+|---|---|---|---|---|
+| NFR-DIS-1 | Disponibilidad objetivo 99,5 % mensual | PT-DIS-001 | Disponibilidad | Pendiente |
+| NFR-DIS-2 | Ventana de mantenimiento y migración segura | PT-DIS-001 | Disponibilidad / Mantenibilidad | Pendiente |
 
-## Resumen de Cobertura
+## 6. Compatibilidad (2)
 
-| Categoria | Total | Cubiertos | % Cobertura |
-|-----------|-------|-----------|-------------|
-| RF | 6 | 6 | 100% |
-| NFR-SEG | 9 | 9 | 100% |
-| NFR-PERF | 3 | 3 | 100% |
-| NFR-USAB | 4 | 4 | 100% |
-| NFR-COMPAT | 2 | 2 | 100% |
-| RB | 5 | 5 | 100% |
-| **TOTAL** | **29** | **29** | **100%** |
+| ID ERS | Requerimiento | Caso(s) | Tipo | Estado |
+|---|---|---|---|---|
+| NFR-COMPAT-1 | Últimas 2 versiones de Chrome, Firefox, Safari, Edge | PT-COMP-002 | Compatibilidad | Pendiente |
+| NFR-COMPAT-2 | Responsivo para móviles y tablets | PT-COMP-001 | Compatibilidad | Pendiente |
 
----
+## 7. Reglas de negocio (5)
 
-**Nota:** Esta matriz debe actualizarse a medida que se ejecuten las pruebas, registrando el estado real (Aprobado / Fallido / Bloqueado) y los defectos encontrados.
+| ID ERS | Regla (literal del ERS) | Caso(s) | Tipo | Hallazgo estático | Estado |
+|---|---|---|---|---|---|
+| RB-1 | Un mismo correo no puede existir en dos empresas como correo principal (si la política lo decide) | PT-FUNC-004 | Funcional | — | Pendiente |
+| RB-2 | Solo usuarios con relación en `empresa_usuarios` ven o editan datos de la empresa | PT-SEG-009 | Seguridad (aislamiento) | H-12, H-17, H-19 | Pendiente |
+| RB-3 | Un contrato se asocia únicamente a un cliente | PT-FUNC-001 | Funcional | — | Pendiente |
+| RB-4 | Un editor solo tiene permisos de lectura | PT-SEG-002 | Seguridad (autorización) | H-02 | Pendiente |
+| RB-5 | Un administrador tiene acceso completo (escritura, lectura, actualización, eliminación) | PT-SEG-002 | Seguridad / Funcional | — | Pendiente |
+
+## 8. Criterios de aceptación de interfaz (ERS §3.1)
+
+| Ref. | Criterio | Caso | Tipo | Estado |
+|---|---|---|---|---|
+| §3.1.1 | Pruebas con 5 usuarios mayores sin bloqueos mayores; accesibilidad básica | PT-USAB-001 | Usabilidad | Pendiente |
+| §3.1.2 | Colección Swagger con tests básicos y cobertura de endpoints críticos | PT-FUNC-011 | Funcional (API) | Pendiente |
+
+## 9. Catálogo de casos de prueba (30)
+
+IDs en **negrita** = existían en EP1 (se conservan, con requerimientos corregidos). **★** = caso a detallar completo en el informe (ID, descripción, requerimiento, datos de entrada, resultado esperado, criterios de aceptación, tipo).
+
+| Caso | Título | Tipo | Requerimientos | Detalle en informe |
+|---|---|---|---|---|
+| **PT-FUNC-001** | Flujo completo de contrato con documento | Funcional E2E | RF-5.1, RF-5.2, RF-5.3, RB-3 | ★ |
+| PT-FUNC-002 | Autenticación y emisión de JWT | Funcional | RF-1.1 | |
+| PT-FUNC-003 | Cierre de sesión y revocación de token | Funcional | RF-1.2 | |
+| PT-FUNC-004 | Registro de usuario y unicidad de correo | Funcional | RF-2.1, RB-1 | |
+| PT-FUNC-005 | Creación de empresa y rol admin por defecto | Funcional | RF-2.2, RF-2.3 | |
+| PT-FUNC-006 | Alta, edición y baja de usuarios con rol | Funcional | RF-3.1, RF-3.3 | |
+| PT-FUNC-007 | Creación de cliente y validaciones | Funcional | RF-4.1, RF-4.3 | |
+| PT-FUNC-008 | Listar, filtrar, editar y eliminar (lógico) clientes | Funcional | RF-4.2 | |
+| PT-FUNC-009 | Estado del contrato y enlace compartido | Funcional | RF-5.4, RF-5.5 | |
+| PT-FUNC-010 | Registro de auditoría de acciones críticas | Funcional | RF-6.1 | |
+| PT-FUNC-011 | Colección OpenAPI/Swagger ejecutable | Funcional (API) | §3.1.2 | |
+| **PT-SEG-001** | Hashing de contraseñas y política de contraseñas | Seguridad | NFR-SEG-2 | ★ |
+| **PT-SEG-002** | RBAC admin vs editor en backend | Seguridad | NFR-SEG-4, RF-3.2, RB-4, RB-5 | ★ |
+| PT-SEG-003 | TLS y redirección HTTP→HTTPS | Seguridad | NFR-SEG-1 | |
+| PT-SEG-004 | Cifrado de datos sensibles en reposo | Seguridad | NFR-SEG-3 | |
+| PT-SEG-005 | Inyección SQL, XSS, CSRF, validación de entrada | Seguridad (DAST) | NFR-SEG-5 | ★ |
+| PT-SEG-006 | Gestión segura de logs y errores | Seguridad | NFR-SEG-6 | |
+| PT-SEG-007 | Cumplimiento de protección de datos personales | Seguridad / Normativo | NFR-SEG-8 | |
+| PT-SEG-008 | Sesión JWT: expiración, firma, manipulación | Seguridad | NFR-SEG-9 | |
+| PT-SEG-009 | Aislamiento entre empresas (IDOR) | Seguridad | RB-2 | |
+| **PT-PERF-001** | Tiempo de respuesta CRUD < 300 ms | Rendimiento | NFR-PERF-1 | ★ |
+| PT-PERF-002 | Carga de página principal < 2 s | Rendimiento | NFR-PERF-2 | |
+| PT-PERF-003 | 200 usuarios concurrentes | Rendimiento (carga/estrés) | NFR-PERF-3 | |
+| PT-PERF-004 | Subida/descarga de documento ≤ 10 s | Rendimiento | criterio RF-5 | |
+| **PT-USAB-001** | Accesibilidad para adultos mayores (WCAG 2.1 AA) | Usabilidad | NFR-USAB-1, §3.1.1 | ★ |
+| PT-USAB-002 | Flujo de registro/empresa y cliente→contratos | Usabilidad | NFR-USAB-2, NFR-USAB-4 | |
+| PT-USAB-003 | Ayuda contextual y mensajes de error | Usabilidad | NFR-USAB-3 | |
+| **PT-DIS-001** | Disponibilidad, respaldo y recuperación | Disponibilidad | NFR-DIS-1, NFR-DIS-2, NFR-SEG-7 | ★ |
+| **PT-COMP-001** | Responsividad en móviles y tablets | Compatibilidad | NFR-COMPAT-2 | ★ |
+| PT-COMP-002 | Compatibilidad entre navegadores | Compatibilidad | NFR-COMPAT-1 | |
+
+★ = 8 casos detallados (uno por tipo de prueba), superando el mínimo de 5 exigido por la pauta.
+
+## 10. Resumen de cobertura (verificable)
+
+| Categoría | Total ERS | Con ≥1 caso | % |
+|---|---|---|---|
+| Requerimientos funcionales (RF) | 17 | 17 | 100 % |
+| Seguridad (NFR-SEG) | 9 | 9 | 100 % |
+| Rendimiento (NFR-PERF) | 3 | 3 | 100 % |
+| Usabilidad (NFR-USAB) | 4 | 4 | 100 % |
+| Disponibilidad (NFR-DIS) | 2 | 2 | 100 % |
+| Compatibilidad (NFR-COMPAT) | 2 | 2 | 100 % |
+| Reglas de negocio (RB) | 5 | 5 | 100 % |
+| **TOTAL** | **42** | **42** | **100 %** |
+| Criterios de interfaz §3.1 | 2 | 2 | 100 % |
+
+> **Aclaración metodológica para la defensa (IE9/IE8):** "100 % de cobertura" significa que **cada requerimiento tiene al menos un caso diseñado** (cobertura de diseño). No significa que todos los casos pasen. La cobertura de *ejecución* y los resultados reales se informan por separado en la sección 8 del informe.

@@ -1,304 +1,82 @@
-# EP1 - ISY1102: Seguridad y Calidad en el Desarrollo de Software
+# EP3 + EP4 — ISY1102 Seguridad y Calidad en el Desarrollo de Software
 
-## Proyecto: Plan de Pruebas - Sistema Atlas
+## Verificando la calidad, seguridad y cumplimiento normativo — Sistema Atlas
 
-**Asignatura:** ISY1102 - Seguridad y Calidad en el Desarrollo de Software  
-**Evaluacion Parcial 1 (EVA1):** Encargo - Diseñando un plan de pruebas seguro, legal y normativo  
-**Ponderacion EVA1:** 17% de la nota de Evaluaciones Parciales  
-**Modalidad EVA1:** Grupal (maximo 3 integrantes), sin presentacion  
-**Caso Base:** Sistema "Atlas" - Plataforma web de gestion de clientes y contratos para pymes  
-**Fecha de entrega EVA1:** 24/09/2026 a las 19:00 hrs via AVA  
-**Plazo de trabajo:** 2 semanas (desde el 10/09/2026)
+| | |
+|---|---|
+| **Asignatura** | ISY1102 — Seguridad y Calidad en el Desarrollo de Software (Duoc UC) |
+| **Caso semestral** | Atlas — plataforma web de gestión de clientes y contratos para pymes |
+| **EP3** | Encargo grupal — informe (12 %) |
+| **EP4** | Presentación **individual** — defensa de 10 min + 5 min de preguntas (28 %) |
+| **Integrantes** | Victor Silva · Jonathan Guerra · Darlette Morales |
+| **Carrera / Sección** | Ingeniería en Informática · 003V |
+| **Docente** | Cristian Eduardo Medina Cespedes |
 
----
+> Este repositorio continúa el trabajo de EP1 (plan de pruebas). Los archivos de EP1 y del cuestionario EVA2 están en `99-Archivo_EP1_EVA2/`.
 
-## Integrantes del Grupo
+## Estado actual
 
-| Nombre Completo | Carrera | Seccion |
-|-----------------|---------|---------|
-| Victor Silva    | [Carrera] | [Seccion] |
-| Jonathan Guerra | [Carrera] | [Seccion] |
-| Darlette Morales| [Carrera] | [Seccion] |
+| Frente | Estado |
+|---|---|
+| Análisis de rúbricas EP3/EP4 | ✅ `00-Analisis_Rubricas/analisis_rubricas_EP3_EP4.md` |
+| Trazabilidad contra el ERS real (42 req. → 30 casos) | ✅ `03-Anexos/Matrices/matriz_trazabilidad.md` (validada: 42/42) |
+| Revisión estática manual del código | 🟡 19 hallazgos **preliminares** — `02-Informe/09-Analisis_Estatico/` |
+| Herramientas SAST/DAST ejecutadas | ❌ pendiente (requiere el Docker oficial del taller; no disponible en la máquina de desarrollo) |
+| Ejecución de casos de prueba | ❌ 0/30 ejecutados oficialmente · 🟡 8 verificaciones **preliminares** en entorno temporal — `08-Ejecucion_Pruebas/registro_ejecucion.md` §2b (pendientes de reconfirmar en Docker, con evidencia) |
+| Feedback del docente a EP1 (86/100) | ✅ recibido: `01-Documentos_Base/Feedback_EP1_docente.md`. Debilidad: IE5 cobertura 6/20; índice no definido |
+| Índice definido del informe | ✅ `02-Informe/00-Indice/indice_informe_EP3.md` |
+| Sección 7 Cobertura, pertinencia y coherencia reescrita | ✅ `02-Informe/07-Analisis_Cobertura/` (pendiente completar valores de ejecución) |
+| Casos detallados (8 completos + 22 fichas) con rutas reales | ✅ `02-Informe/06-Casos_Prueba/` |
+| SonarQube + guía de herramientas (k6, ZAP, Semgrep, Gitleaks, Trivy) | ✅ `03-Anexos/Herramientas/` (sin ejecutar) |
+| Análisis ético-normativo | 🟡 borrador estructural |
+| Informe final Word/PDF (Arial 11, 1,5, justificado) | ❌ |
+| Diapositivas EP4 | ❌ guion listo en `05-Presentacion_EP4/` |
 
-**Docente:** [Nombre del docente]  
-**Fecha de entrega EVA1 (Informe):** 24/09/2026 a las 19:00 hrs  
-**Fecha de entrega EVA2 (Teorica):** 24/09/2026 a las 19:00 hrs (duracion: 60 minutos)
-
----
-
-## Evaluaciones del Parcial
-
-### EVA1 - Encargo Grupal (17%)
-**Modalidad:** Encargo sin presentacion, grupal (max. 3 integrantes)  
-**Entregable:** Informe con plan de pruebas del sistema Atlas  
-**Plataforma:** AVA  
-**Fecha limite:** 24/09/2026 - 19:00 hrs  
-
-### EVA2 - Evaluacion Teorica Individual (8%)
-**Modalidad:** Evaluacion teorica, individual  
-**Duracion:** 60 minutos  
-**Plataforma:** AVA  
-**Fecha e inicio:** 24/09/2026 - 19:00 hrs  
-**Preparacion:** Se compartio una Evaluacion Formativa en AVA para ensayar los contenidos
-
----
-
-## Indicadores de Logro (IL) Oficiales del Curso
-
-| IL | Descripcion | Vinculacion con la Evaluacion |
-|----|-------------|-------------------------------|
-| **IL 1.1** | Reconoce el rol de la calidad del software en el desarrollo de productos, valorando su contribucion al exito del proyecto y comprendiendo el cumplimiento legal y normativo como un componente esencial del proceso de desarrollo. | **IE1** - Introduccion y criterios de calidad |
-| **IL 1.2** | Distingue las diferencias entre pruebas funcionales y no funcionales, analizando su relevancia en el aseguramiento de la calidad del software e integrando los criterios legales y normativos que sustentan su aplicacion. | **IE2** - Tipos de pruebas |
-| **IL 1.3** | Identifica pruebas de usabilidad, rendimiento y compatibilidad, reconociendo su impacto en la calidad, seguridad y conformidad normativa del software, y su aporte a la accesibilidad, confiabilidad y etica del producto final. | **IE3** - Casos de prueba no funcionales |
-| **IL 1.4** | Disena un plan de pruebas que describa la estrategia general, los objetivos, los recursos y el cronograma de ejecucion, asegurando coherencia con los requerimientos del proyecto y las normativas vigentes. | **IE4** - Elementos del plan de pruebas |
-| **IL 1.5** | Evalua la consistencia y cobertura del plan de pruebas propuesto, verificando su alineacion con los objetivos del proyecto, los estandares de calidad y los marcos legales y regulatorios aplicables. | **IE5** - Analisis de cobertura |
-
----
-
-## Estructura del Repositorio
+## Estructura
 
 ```
-EvaluacionParcial1_SeguridadCalidad_Software/
-|
-|-- 01-Documentos_Base/           # Documentos originales de la evaluacion
-|   |-- SRS_Atlas_384735328.pdf        # Especificacion de Requerimientos de Software
-|   |-- Pauta_Evaluacion_403028603.pdf # Pauta de evaluacion y rubrica
-|   |-- Pauta_Evaluacion_403028603.txt # Texto extraido de la pauta
-|   |-- EP1_ISY1102_Formato_Informe.docx # Formato oficial del informe
-|
-|-- 02-Informe/                   # Secciones del informe (archivos .md o .docx)
-|   |-- 01-Introduccion/
-|   |-- 02-Criterios_Calidad/
-|   |-- 03-Estrategia_Pruebas/
-|   |-- 04-Tipos_Pruebas/
-|   |-- 05-Recursos/
-|   |-- 06-Casos_Prueba/
-|   |-- 07-Analisis_Cobertura/
-|
-|-- 03-Anexos/                    # Material complementario
-|   |-- Diagramas/
-|   |-- Matrices/
-|
-|-- 04-Entrega/                   # Documento final consolidado (PDF o DOCX)
-|
-|-- CodigoFuenteA/                # Codigo fuente del sistema Atlas (Original)
+.
+├── 00-Analisis_Rubricas/        Análisis profundo de las pautas EP3 y EP4, brechas y plan
+├── 01-Documentos_Base/          ERS, pautas EP1/EP3/EP4 (solo lectura)
+├── 02-Informe/                  Secciones del informe
+│   ├── 00-Indice/               Índice definido del informe y guía para generarlo
+│   ├── 01-Introduccion … 07-Analisis_Cobertura   (base EP1, a ajustar)
+│   ├── 08-Ejecucion_Pruebas/    Escala de criticidad + registro de ejecución e incidentes
+│   ├── 09-Analisis_Estatico/    Hallazgos H-01…H-19 con archivo:línea
+│   └── 10-Analisis_Etico_Normativo/
+├── 03-Anexos/Matrices/          Matriz de trazabilidad v2
+├── 04-Entrega/                  EP1_entregado/ · EP3/ (informe final)
+├── 05-Presentacion_EP4/         Guion de defensa y preguntas probables
+├── 06-Evidencias/               Capturas y logs (nombrar: PT-XXX-000_01.png)
+├── 99-Archivo_EP1_EVA2/         README y guía del ciclo anterior
+└── CodigoFuenteA/               Código del sistema Atlas (no modificar)
 ```
 
----
+## Reglas de trabajo
 
-## Rubrica de Evaluacion (Fuente de Verdad)
+1. **No modificar** `01-Documentos_Base/` ni `CodigoFuenteA/`.
+2. **Solo se registra lo ejecutado.** Un caso sin evidencia está "No ejecutado".
+3. Pruebas intrusivas **solo** contra el entorno Docker local de la asignatura, con datos ficticios.
+4. Cada incidente: `INC → caso → requerimiento → evidencia → norma`.
+5. La defensa es individual: los tres deben dominar todo el flujo.
 
-| Indicador | Ponderacion | Muy Buen Desempeno (100%) |
-|-----------|-------------|---------------------------|
-| **IE1** - Importancia de calidad, seguridad y cumplimiento legal | 15% | Identifica con claridad y profundidad la importancia de calidad, seguridad y cumplimiento legal, integrando ejemplos pertinentes y lenguaje tecnico adecuado |
-| **IE2** - Clasificacion de tipos de pruebas | 20% | Clasifica y describe correctamente todos los tipos de prueba (funcionales, no funcionales, seguridad, rendimiento, etc.), justificando su proposito y aplicacion |
-| **IE3** - Pruebas no funcionales: diseno de casos | 20% | Disena y documenta casos representativos de distintos tipos de pruebas no funcionales, definiendo criterios de aceptacion y proposito de manera coherente con el contexto |
-| **IE4** - Elementos del plan de pruebas | 25% | El plan presenta todos los apartados solicitados (introduccion, alcance, objetivos, estrategia, recursos y cronograma) con coherencia tecnica, vinculacion a requerimientos y normativas vigentes |
-| **IE5** - Cobertura, pertinencia y coherencia | 20% | Evalua la coherencia y cobertura del plan de pruebas con respecto a los requerimientos y estandares, demostrando analisis critico y justificacion tecnica |
-
-### Niveles de Logro
-
-| Nivel | Porcentaje |
-|-------|------------|
-| Muy buen desempeno | 100% |
-| Buen desempeno | 80% |
-| Desempeno aceptable | 60% |
-| Desempeno incipiente | 30% |
-| Desempeno no logrado | 0% |
-
----
-
-## Plan de Accion para Lograr el Maximo Puntaje
-
-### IE1 - Calidad, Seguridad y Cumplimiento Legal (15%)
-**Objetivo:** Demostrar que se entiende POR QUE es importante todo esto.
-
-**Acciones:**
-1. Definir el contexto del sistema Atlas: plataforma que maneja datos personales, contratos y documentos sensibles de pymes chilenas.
-2. Justificar la **calidad**: errores pueden causar perdida de contratos, datos bancarios de clientes o informacion empresarial critica.
-3. Justificar la **seguridad** citando ejemplos concretos del caso:
-   - Hashing de contraseñas con bcrypt (NFR-SEG-2)
-   - TLS obligatorio en comunicaciones (NFR-SEG-1)
-   - Proteccion contra CSRF, XSS, SQL Injection (NFR-SEG-5)
-   - Control de acceso por roles (NFR-SEG-4)
-4. Justificar el **cumplimiento legal** mencionando:
-   - Ley de Proteccion de Datos Personales en Chile (Ley N° 19.628)
-   - NFR-SEG-8: Cumplimiento de normativas de proteccion de datos personales
-   - RB-2: Solo usuarios con relacion en empresa_usuarios pueden ver/editar datos
-5. Usar lenguaje tecnico formal.
-
-### IE2 - Clasificacion de Tipos de Pruebas (20%)
-**Objetivo:** Demostrar que se saben QUE tipos de pruebas existen y PARA QUE sirven.
-
-**Debes incluir:**
-
-| Tipo de Prueba | Justificacion basada en Atlas | Requerimientos asociados |
-|----------------|-------------------------------|--------------------------|
-| Pruebas Funcionales | Validar login, registro, CRUD de clientes/contratos, gestion de roles | RF-1, RF-2, RF-3, RF-4, RF-5, RF-6 |
-| Pruebas de Seguridad | Verificar autenticacion JWT, control de acceso por rol, proteccion contra inyeccion SQL, XSS, CSRF | NFR-SEG-1 al NFR-SEG-9 |
-| Pruebas de Rendimiento | Confirmar operaciones CRUD < 300ms, carga de pagina < 2s, 200 usuarios concurrentes | NFR-PERF-1, NFR-PERF-2, NFR-PERF-3 |
-| Pruebas de Usabilidad | Validar accesibilidad para adultos mayores, contraste, tamanos de fuente, navegacion por teclado | NFR-USAB-1, NFR-USAB-2, NFR-USAB-3, NFR-USAB-4 |
-| Pruebas de Integracion | Verificar Frontend (React) + Backend (Express) + PostgreSQL + Storage de documentos | Arquitectura 4.1 y 4.2 |
-| Pruebas de Compatibilidad | Probar en Chrome, Firefox, Safari, Edge ultimas 2 versiones, y dispositivos moviles/tablets | NFR-COMPAT-1, NFR-COMPAT-2 |
-
-### IE3 - Pruebas No Funcionales: Diseno de Casos (20%)
-**Objetivo:** Disenar al menos 5 casos de prueba NO FUNCIONALES concretos para Atlas.
-
-**Ejemplos de casos obligatorios:**
-
-1. **PT-SEG-001** - Hashing de contraseñas con bcrypt (NFR-SEG-2)
-2. **PT-SEG-002** - Control de acceso por rol Editor vs Admin (RF-3.2 + RB-4)
-3. **PT-PERF-001** - Tiempo de respuesta CRUD < 300ms (NFR-PERF-1)
-4. **PT-USAB-001** - Accesibilidad para adultos mayores (NFR-USAB-1)
-5. **PT-COMP-001** - Responsividad en moviles y tablets (NFR-COMPAT-2)
-
-Cada caso debe contener: ID, Descripcion, Requerimiento asociado, Datos de entrada, Resultado esperado, Criterios de aceptacion, Tipo de prueba.
-
-### IE4 - Elementos del Plan de Pruebas (25%)
-**Objetivo:** Presentar un plan COMPLETO y coherente.
-
-**Apartados obligatorios:**
-1. Introduccion (contexto Atlas + proposito del plan)
-2. Criterios de Calidad (usabilidad, rendimiento, estabilidad, confiabilidad, mantenibilidad, seguridad, normativas)
-3. Estrategia de Pruebas (enfoque mixto manual + automatizado, etapas, herramientas, priorizacion, criterios de entrada/salida)
-4. Tipos de Prueba (lista completa con justificacion)
-5. Recursos Necesarios (humanos, tecnicos, entornos)
-6. Diseno de Casos de Prueba (minimo 5 casos representativos)
-7. Criterios de Aceptacion (transversales)
-
-**Ademas:** Alcance, Objetivos especificos, Cronograma estimado.
-
-### IE5 - Cobertura, Pertinencia y Coherencia (20%)
-**Objetivo:** Demostrar que el plan realmente cubre lo que necesita Atlas.
-
-**Debes demostrar analisis critico mediante:**
-1. **Matriz de trazabilidad:** Requerimiento del ERS -> Caso de prueba -> Tipo de prueba -> Resultado esperado
-2. **Analisis de cobertura:** Cuantos RF y NFR estan cubiertos (objetivo: todos)
-3. **Justificacion tecnica:** Por que se probaron ciertos escenarios y no otros. Mencionar riesgos.
-4. **Relacion con estandares:** ISO/IEC 25010, OWASP Top 10, WCAG 2.1
-5. **Revision de consistencia:** Casos coherentes con estrategia, recursos permiten ejecucion, criterios medibles.
-
----
-
-## Division de Tareas Sugerida (3 Integrantes)
-
-### Victor Silva - Lider Tecnico y Seguridad
-**Responsable de:**
-- Seccion 1: Introduccion
-- Seccion 2: Criterios de Calidad, Seguridad y Cumplimiento Normativo
-- IE1 (15%) + IE5 parcial
-- Coordinar la matriz de trazabilidad
-- Preparacion EVA2: IL 1.1 y IL 1.5
-
-**Entregables:**
-- `02-Informe/01-Introduccion/introduccion.md`
-- `02-Informe/02-Criterios_Calidad/criterios_calidad.md`
-
-### Jonathan Guerra - Estrategia y Tipos de Prueba
-**Responsable de:**
-- Seccion 3: Estrategia de Pruebas
-- Seccion 4: Tipos de Pruebas
-- Seccion 5: Recursos Necesarios
-- IE2 (20%) + IE4 parcial
-- Preparacion EVA2: IL 1.2 y IL 1.4
-
-**Entregables:**
-- `02-Informe/03-Estrategia_Pruebas/estrategia.md`
-- `02-Informe/04-Tipos_Pruebas/tipos_pruebas.md`
-- `02-Informe/05-Recursos/recursos.md`
-
-### Darlette Morales - Casos de Prueba y Analisis
-**Responsable de:**
-- Seccion 6: Diseno de Casos de Prueba (minimo 5 casos)
-- Seccion 7: Analisis de Cobertura y Matriz de Trazabilidad
-- IE3 (20%) + IE5 parcial
-- Preparacion EVA2: IL 1.3 y IL 1.5
-
-**Entregables:**
-- `02-Informe/06-Casos_Prueba/casos_prueba.md`
-- `02-Informe/07-Analisis_Cobertura/analisis_cobertura.md`
-- `03-Anexos/Matrices/matriz_trazabilidad.md`
-
-### Tareas Conjuntas (Todos)
-- Revision cruzada de secciones
-- Consolidacion del informe final en `04-Entrega/`
-- Verificacion de aspectos formales (formato, fuentes, interlineado)
-- Estudio grupal para EVA2 (evaluacion teorica individual del 24/09)
-
----
-
-## Aspectos Formales Obligatorios
-
-Para no perder puntos por formato:
-
-- [ ] **Portada:** Nombre completo de cada integrante, carrera, seccion, docente, fecha
-- [ ] **Formato:** Word o PDF
-- [ ] **Titulos:** Arial 12, negrita
-- [ ] **Cuerpo:** Arial 11
-- [ ] **Interlineado:** 1,5
-- [ ] **Alineacion:** Texto justificado
-- [ ] **Lenguaje:** Formal tecnico (evitar "nosotros pensamos", usar "se recomienda", "es imperativo", "el analisis evidencia")
-- [ ] **Entrega:** Subir a plataforma AVA en el plazo indicado
-
----
-
-## Checklist de Entrega Final
-
-Antes de subir el informe, verifica:
-
-- [ ] El informe incluye los 7 apartados principales
-- [ ] Hay al menos 5 casos de prueba detallados con ID, descripcion, requerimiento, datos de entrada, resultado esperado, criterios de aceptacion y tipo
-- [ ] Los casos de prueba estan vinculados a codigos de requerimiento del ERS (RF-1, NFR-SEG-1, etc.)
-- [ ] Se menciona la Ley N° 19.628 de Proteccion de Datos Personales
-- [ ] Se citan estandares tecnicos (ISO/IEC 25010, OWASP, WCAG)
-- [ ] La matriz de trazabilidad esta completa
-- [ ] El analisis de cobertura demuestra que todos los requerimientos estan cubiertos
-- [ ] El formato cumple con los aspectos formales (Arial 11/12, interlineado 1.5, justificado)
-- [ ] La portada tiene todos los datos del grupo
-- [ ] Se ha revisado la redaccion y no hay faltas de ortografia
-
----
-
-## Comandos Git Utiles para el Trabajo Colaborativo
+## Levantar el sistema (en el taller de proyectos)
 
 ```bash
-# Clonar el repositorio (cada integrante)
-git clone <URL_DEL_REPOSITORIO>
-
-# Antes de empezar a trabajar
-git pull origin main
-
-# Crear una rama para tu seccion
-git checkout -b feature/seccion-casos-prueba
-
-# Despues de hacer cambios
-git add .
-git commit -m "feat: agrega casos de prueba PT-SEG-001 y PT-PERF-001"
-
-# Subir tu rama
-git push origin feature/seccion-casos-prueba
-
-# Para integrar cambios (una vez revisados)
-git checkout main
-git merge feature/seccion-casos-prueba
-
-# Ver estado actual
-git status
-
-# Ver historial de cambios
-git log --oneline
+cd CodigoFuenteA
+docker compose up --build
+# Front: http://localhost:3350   API: http://localhost:4450   Swagger: http://localhost:4450/docs
 ```
 
----
+## Formato obligatorio del informe
 
-## Notas Importantes
+Word o PDF · títulos Arial 12 · cuerpo Arial 11 · interlineado 1,5 · justificado · portada (integrantes, carrera, sección, docente, fecha) · lenguaje formal técnico · capturas legibles · subir a AVA el día de la evaluación.
 
-1. **Trabajar en ramas:** Cada integrante debe trabajar en su propia rama para evitar conflictos.
-2. **Commits frecuentes:** Hacer commits pequenos y descriptivos.
-3. **Reuniones de sincronizacion:** Acordar reuniones para revisar avances antes de consolidar.
-4. **No modificar CodigoFuenteA:** El codigo fuente es solo referencia para entender el sistema. No modificar a menos que sea necesario para pruebas.
-5. **Documentos base son solo lectura:** Los archivos en `01-Documentos_Base/` son la fuente de verdad. No modificarlos.
+## Siguientes pasos
 
----
-
-**Exito en la evaluacion!**
+1. Confirmar las **fechas** de EP3/EP4.
+2. En el taller: `docker compose up --build` (guía: `03-Anexos/Herramientas/README.md` §0) y verificar que responde.
+3. Levantar SonarQube y ejecutar el escaneo (`03-Anexos/Herramientas/README.md` §1), luego el resto de herramientas estáticas.
+4. Ejecutar los 30 casos **uno a uno** en el orden de `08-Ejecucion_Pruebas/registro_ejecucion.md` §5, empezando por reconfirmar con evidencia las 8 verificaciones preliminares de §2b (PT-SEG-001, PT-SEG-002, PT-FUNC-003, PT-FUNC-010).
+5. Completar el análisis ético-normativo y consolidar el informe en `04-Entrega/EP3/`.
+6. Preparar diapositivas y ensayar la defensa individual.
