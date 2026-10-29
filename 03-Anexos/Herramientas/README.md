@@ -42,7 +42,7 @@ Resultados en `http://localhost:9000/dashboard?id=atlas-ep3`. Capturar: *Overvie
 
 **Cómo leer el resultado**
 - **Vulnerabilidades / Hotspots** → insumo de EP4-IE6; mapear cada una a OWASP, requerimiento y norma (tabla en sección 9).
-- **Quality Gate:** el umbral por defecto («Sonar way») incluye cobertura en código nuevo, y el proyecto no tiene pruebas, por lo que esa condición fallará. Explicarlo en el informe como consecuencia directa de la ausencia de pruebas (criterio C6, sección 7) y no como un error de la herramienta.
+- **Quality Gate:** en la ejecución preliminar (26.10.0, primer análisis del proyecto) el Quality Gate dio **OK sin condiciones evaluadas** — la condición de cobertura en código nuevo de "Sonar way" no se activó por no existir todavía una línea base de código nuevo (comparación entre análisis). Esto puede diferir en el taller según la versión de la imagen Docker y si ya existe un historial de análisis previo; si en esa ejecución el Quality Gate sí falla por cobertura, es consecuencia directa de la ausencia de pruebas automatizadas en el proyecto (criterio C6, sección 7), no un error de la herramienta. Registrar el resultado real obtenido, sea cual sea.
 - **Alcance de la edición Community:** según la documentación del proveedor, el análisis de flujo de datos contaminados (*taint analysis*, que detecta inyecciones rastreando la entrada hasta su uso) se ofrece en ediciones de pago. Verificar en la versión instalada. Por ello se complementa con Semgrep.
 
 ## 2. Semgrep (SAST complementario)
