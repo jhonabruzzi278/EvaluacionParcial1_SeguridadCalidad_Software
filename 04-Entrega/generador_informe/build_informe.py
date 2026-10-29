@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Genera el informe EP3 sobre la plantilla del docente. Uso: ver make.sh (3 pasadas para fijar los números del índice)."""
 import copy
+import datetime
 import json
 import re
 import shutil
@@ -241,7 +242,7 @@ A(P(f'**Dentro del alcance:** {ALC_N} de los 42 requerimientos del ERS (más el 
 A(H(2, '1.3 Objetivos'))
 A(TABLE([600, 3500, 3446, 2200], [
     ['N.º', 'Objetivo', 'Indicador de logro', 'Requerimiento / norma'],
-    ['O1', 'Verificar las funciones y reglas de negocio del ERS.', 'Resultado verificado y con evidencia para cada RF y RB.', 'RF-1 a 6; RB-1 a 5'],
+    ['O1', 'Verificar las funciones y reglas de negocio del ERS.', 'Resultado verificado y con evidencia para cada RF y RB del alcance.', 'RF-1 a 6; RB-1 a 5'],
     ['O2', 'Verificar los controles de seguridad.', '0 escrituras con rol editor; contraseñas con bcrypt; 0 alertas altas en ZAP.', 'NFR-SEG-1 a 9; Ley 19.628'],
     ['O3', 'Medir el rendimiento frente a los umbrales del ERS.', 'p95 < 300 ms en CRUD simples; error 5xx < 1 %.', 'NFR-PERF-1 a 3'],
     ['O4', 'Evaluar usabilidad y accesibilidad.', 'Lighthouse ≥ 90 y 0 incidencias críticas en axe.', 'NFR-USAB-1; Ley 20.422'],
@@ -294,13 +295,13 @@ A(SPACER())
 A(H(1, '3. Plan de pruebas'))
 A(H(2, '3.1 Estrategia de pruebas'))
 A(P('Enfoque **mixto y basado en riesgo**: se automatiza lo repetible y medible (API, carga, escaneo de código y de la aplicación) y se ejecuta manualmente lo que exige juicio humano '
-    '(accesibilidad con usuarios, compatibilidad, revisión de código). La seguridad tiene prioridad porque Atlas maneja datos personales.'))
-A(B('**Enfoque:** SAST (análisis estático), DAST (aplicación en ejecución) y pruebas manuales de caja negra basadas en el ERS.'))
-A(B('**Etapas:** preparación del entorno y datos ficticios; análisis estático; pruebas funcionales vía API; seguridad de autenticación y autorización; seguridad dinámica; rendimiento; usabilidad y compatibilidad; disponibilidad y recuperación; consolidación de incidentes y matriz.'))
-A(B('**Priorización:** P1 seguridad (autenticación, autorización, datos) y funciones núcleo (login, clientes, contratos); P2 rendimiento, usabilidad y disponibilidad; P3 compatibilidad (justificación en la sección 4.2).'))
+    '(revisión de código e interpretación de los resultados de las herramientas). La seguridad tiene prioridad porque Atlas maneja datos personales.'))
+A(B('**Enfoque:** SAST (análisis estático), DAST (aplicación en ejecución) y pruebas de caja negra basadas en el ERS, ejecutadas con scripts reproducibles.'))
+A(B('**Etapas:** preparación del entorno y datos ficticios; análisis estático; pruebas funcionales vía API; seguridad de autenticación y autorización; seguridad dinámica; rendimiento; accesibilidad; consolidación de incidentes y matriz.'))
+A(B('**Priorización:** P1 seguridad (autenticación, autorización, datos) y funciones núcleo (login, clientes, contratos); P2 rendimiento, accesibilidad y trazabilidad (auditoría); compatibilidad y disponibilidad quedan fuera del alcance de este ciclo (sección 1.2).'))
 A(B('**Criterios de entrada:** código versionado, stack Docker operativo, datos de prueba ficticios cargados y casos revisados.'))
-A(B('**Criterios de salida:** casos P1 ejecutados con evidencia; casos P2 y P3 ejecutados según el tiempo disponible, informando la cobertura de ejecución real; incidentes clasificados y trazados a su caso y requerimiento; matriz actualizada.'))
-A(B('**Regresión:** la re-ejecución de los casos fallidos se diseña para después de corregir el código; no se ejecuta en este ciclo porque la corrección del sistema no forma parte del encargo.'))
+A(B('**Criterios de salida:** casos P1 y P2 ejecutados con evidencia, informando la cobertura de ejecución real; incidentes clasificados y trazados a su caso y requerimiento; matriz actualizada.'))
+A(B('**Regresión:** la re-ejecución de los casos fallidos se diseña para después de corregir el código; no se ejecuta en este ciclo porque la corrección del sistema no forma parte del alcance.'))
 
 A(H(2, '3.2 Tipos de prueba'))
 A(P('Los tipos se clasifican por objetivo en **funcionales**, **no funcionales** (rendimiento, usabilidad, compatibilidad, disponibilidad) y de **seguridad**. Se indica su propósito, origen, impacto si falla y casos asociados.'))
@@ -363,7 +364,7 @@ A(SPACER())
 
 # =========================================================== 4. Casos
 A(H(1, '4. Diseño de casos de prueba'))
-A(H(2, '4.1 Casos de prueba representativos'))
+A(H(2, '4.1 Casos de prueba priorizados'))
 A(P('Se priorizaron **10 casos** por riesgo (probabilidad × impacto): cuatro funcionales (PT-FUNC-001, 002, 008 y 010), cuatro de seguridad (PT-SEG-001, 002, 008 y 009), uno de rendimiento (PT-PERF-001) y uno de usabilidad (PT-USAB-001). '
     'Verifican las funciones núcleo del negocio y los controles de seguridad de mayor impacto sobre los datos personales; el alcance de requerimientos, la cobertura y las brechas se analizan en la sección 4.2 y el Anexo A. '
     'Los resultados esperados se derivan del ERS y los datos son ficticios. En los comandos, $API equivale a http://localhost:4450.'))
@@ -871,32 +872,6 @@ A(P('Figura B.2. Las 4 vulnerabilidades, con db.js:6 clasificada Blocker.', size
 A(IMG(str(EV / 'sonarqube_03_bugs.png'), 'Bugs en SonarQube'))
 A(P('Figura B.3. Bugs (25): promesas sin manejar en componentes del frontend.', size=18, italic=True, jc='left', after=200))
 
-# =========================================================== Anexo C
-def extracto(archivo, patrones, max_lineas=14):
-    out = []
-    for ln in (EJ / archivo).read_text(encoding='utf-8').splitlines():
-        if any(p in ln for p in patrones):
-            out.append(ln.strip()[:118])
-    return out[:max_lineas]
-
-
-A(H(1, 'Anexo C. Extractos de la evidencia de ejecución', pb=True))
-A(P('Extractos de los archivos de evidencia guardados en 06-Evidencias/ejecucion/ (cada caso tiene su archivo completo, con peticiones, respuestas y veredicto por criterio).', jc='left'))
-A(MONO('Evidencia PT-SEG-001: contraseñas en la base de datos (PT-SEG-001_01_hash_politica.txt)',
-       extracto('PT-SEG-001_01_hash_politica.txt', ['SELECT nombre_usuario', '    admin|', '    editor|', 'NO CUMPLE', 'VEREDICTO'], 8)))
-A(SPACER())
-A(MONO('Evidencia PT-SEG-002: operaciones del editor (PT-SEG-002_01_rbac.txt)',
-       extracto('PT-SEG-002_01_rbac.txt', ['Payload JWT editor', '[escritura]', 'NO CUMPLE', 'VEREDICTO'], 14)))
-A(SPACER())
-A(MONO('Evidencia PT-SEG-009: acceso a recursos de otra empresa y sin token (PT-SEG-009_01_aislamiento.txt)',
-       extracto('PT-SEG-009_01_aislamiento.txt', ['[empresa B]', '[sin token]', 'NO CUMPLE', 'VEREDICTO'], 14)))
-A(SPACER())
-A(MONO('Evidencia PT-SEG-008: token forjado con el secreto por defecto (PT-SEG-008_01_jwt.txt)',
-       extracto('PT-SEG-008_01_jwt.txt', ['JWT_SECRET efectivo', 'token forjado', 'NO CUMPLE', 'VEREDICTO'], 8)))
-A(SPACER())
-A(MONO('Evidencia PT-PERF-001: latencia por endpoint con k6 (PT-PERF-001_01_k6.txt)',
-       extracto('PT-PERF-001_01_k6.txt', ['p95 =', 'RESUMEN'], 8)))
-
 # ---------------------------------------------------------------- ensamblado
 
 def build():
@@ -908,6 +883,17 @@ def build():
     for p in WORK.rglob('*'):
         if p.is_symlink():
             p.unlink()
+    shutil.rmtree(WORK / '[trash]', ignore_errors=True)
+    # propiedades del documento: la plantilla trae el autor original; se reemplazan por los datos del informe
+    core = WORK / 'docProps/core.xml'
+    c = core.read_text(encoding='utf-8')
+    ahora = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    autores = 'Victor Silva, Jonathan Guerra y Darlette Morales'
+    c = re.sub(r'<dc:title>.*?</dc:title>', '<dc:title>Informe EP3 - Atlas: seguridad y calidad en el desarrollo de software</dc:title>', c, flags=re.S)
+    c = re.sub(r'<dc:creator>.*?</dc:creator>', f'<dc:creator>{autores}</dc:creator>', c, flags=re.S)
+    c = re.sub(r'<cp:lastModifiedBy>.*?</cp:lastModifiedBy>', f'<cp:lastModifiedBy>{autores}</cp:lastModifiedBy>', c, flags=re.S)
+    c = re.sub(r'(<dcterms:(?:created|modified)[^>]*>)[^<]*(</dcterms:(?:created|modified)>)', rf'\g<1>{ahora}\g<2>', c)
+    core.write_text(c, encoding='utf-8')
 
     (WORK / 'word/media').mkdir(exist_ok=True)
     rels = WORK / 'word/_rels/document.xml.rels'
@@ -1021,6 +1007,8 @@ def build():
     ppr.insert(1, etree.fromstring(f'<w:pageBreakBefore {NSDECL}/>'))
     for el in etree.fromstring(f'<root {NSBODY}>{"".join(body)}</root>'):
         sect.addprevious(el)
+    if etree.QName(sect.getprevious()).localname == 'tbl':  # Word exige un párrafo tras una tabla al final del cuerpo
+        sect.addprevious(etree.fromstring(f'<w:p {NSDECL}><w:pPr><w:spacing w:before="0" w:after="0" w:line="20" w:lineRule="exact"/></w:pPr></w:p>'))
 
     tree.write(str(docp), xml_declaration=True, encoding='UTF-8', standalone=True)
 

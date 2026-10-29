@@ -1,6 +1,6 @@
 # Cumplimiento del informe EP3 frente a la pauta
 
-Auditoría interna del informe `04-Entrega/EP3/EP3_ISY1102_Informe_Atlas.docx` (30 págs.) contra `Pauta_EP3_403028442.pdf`. No forma parte del informe. Los números de sección son los del informe.
+Auditoría interna del informe `04-Entrega/EP3/EP3_ISY1102_Informe_Atlas.docx` (28 págs.) contra `Pauta_EP3_403028442.pdf`. No forma parte del informe. Los números de sección son los del informe.
 
 ## 1. Indicadores de evaluación
 
@@ -26,7 +26,7 @@ Auditoría interna del informe `04-Entrega/EP3/EP3_ISY1102_Informe_Atlas.docx` (
 | Word o PDF; portada con integrantes, carrera, sección, docente y fecha | Sí, salvo apellidos | Fecha 29-oct-2026 (confirmar); faltan los apellidos completos |
 | Arial 11 cuerpo, interlineado 1,5, justificado | Sí | Tablas en Arial 9–10, interlineado simple (habitual en tablas) |
 | Títulos Arial 12 | Sí | Títulos y subtítulos en 12 pt (la plantilla traía 16 pt en nivel 1) |
-| Lenguaje formal técnico y capturas legibles | Sí | Anexo B (capturas de SonarQube) y Anexo C (extractos de la evidencia de ejecución) |
+| Lenguaje formal técnico y capturas legibles | Sí | Anexo B (capturas de SonarQube); la evidencia de cada caso está en 06-Evidencias/ejecucion/ |
 
 ## 3. Realismo: decisiones tomadas para que el informe sea defendible
 
