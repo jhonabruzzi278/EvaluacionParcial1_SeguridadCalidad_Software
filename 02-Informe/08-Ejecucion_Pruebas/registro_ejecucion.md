@@ -48,6 +48,35 @@ Cada incidente se clasifica además por **tipo de defecto** (funcional, segurida
 
 **Incidentes que estos resultados sustentan (a formalizar como INC-xxx tras la ejecución oficial):** ausencia de control de rol en el backend (puntos 1–3, criticidad propuesta: Crítica), exposición de auditoría sin autenticación (punto 4, Alta), ausencia de política de contraseñas (punto 6, Media), ausencia de cierre de sesión en el servidor (punto 7, Alta).
 
+## 2c. Análisis estático con SonarQube (resultado real, entorno temporal)
+
+> Mismo tipo de advertencia que en §2b: SonarQube Community 26.10.0.133078 se ejecutó de forma **standalone** (Java, sin Docker) contra `CodigoFuenteA/BACKEND/src` y `CodigoFuenteA/FRONTEND/src` reales, sin modificarlos. Es la herramienta SAST oficial del plan (`03-Anexos/Herramientas/README.md` §1). El resultado es real y queda exportado como evidencia en `06-Evidencias/estatico/` (métricas, vulnerabilidades, bugs y code smells en JSON), pero debe **repetirse en el taller** con el Docker oficial para el informe final, dejando también capturas de pantalla del dashboard.
+
+**Métricas generales** (`ncloc` = líneas de código no comentadas):
+
+| Métrica | Valor |
+|---|---|
+| Líneas de código (ncloc) | 6 955 |
+| Vulnerabilidades | 4 (1 Blocker, 2 Major, 1 Minor) |
+| Bugs | 25 |
+| Code smells | 9 |
+| Security hotspots | 0 |
+| Duplicación de líneas | 16,4 % |
+| Quality Gate | **OK** (sin condiciones evaluadas: primer análisis del proyecto, sin línea base de código nuevo todavía) |
+
+**Las 4 vulnerabilidades, con su severidad SonarQube:**
+
+| Severidad | Archivo:línea | Mensaje de SonarQube | Hallazgo que confirma |
+|---|---|---|---|
+| **BLOCKER** | `BACKEND/src/db.js:6` | "Make sure this PostgreSQL password gets changed and removed from the code." | H-11 |
+| MAJOR | `BACKEND/src/app.js:22` | "Make sure that enabling CORS is safe here." | H-10 |
+| MAJOR | `BACKEND/src/routes/contracts.js:15` | "Make sure the content length limit is safe here." | H-08 |
+| MINOR | `BACKEND/src/app.js:20` | "This framework implicitly discloses version information by default. Make sure it is safe here." | H-10 |
+
+Los 25 bugs son mayoritariamente del frontend (promesas sin `await`/`.catch` en los componentes de React: `Layout.jsx`, `Home.jsx`, `Login.jsx`, `Register.jsx`, formularios de clientes/contratos, etc.) — no estaban catalogados como hallazgo de seguridad (H-xx) porque son defectos de calidad/mantenibilidad, no de seguridad; se incorporan a la sección 7 del informe como evidencia de calidad de código. Detalle completo en `06-Evidencias/estatico/sonarqube_bugs.json`.
+
+**Lectura para el informe (IE6/EP4):** SonarQube confirma con una herramienta independiente 3 de los hallazgos obtenidos por revisión manual (H-08, H-10, H-11), y marca el de credenciales por defecto como **Blocker** — el nivel más alto de su escala, coherente con la criticidad "Crítica/Alta" que ya le habíamos asignado. Cero *security hotspots* detectados no significa ausencia de más vulnerabilidades: la edición Community no incluye *taint analysis* (ver `03-Anexos/Herramientas/README.md` §1), por lo que H-01, H-02, H-12, H-17, H-19 (todos de lógica de autorización) no son detectables por esta herramienta y siguen dependiendo de los casos de prueba dinámicos.
+
 **Pendiente de esta ejecución preliminar:** no se guardó evidencia en `06-Evidencias/` porque el entorno era temporal y ya fue desmontado. Repetir los 8 puntos en el taller **con captura/log** antes de citarlos como resultado oficial en el informe.
 
 ## 3. Detalle de ejecución por caso
