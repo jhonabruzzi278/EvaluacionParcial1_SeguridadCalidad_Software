@@ -4,7 +4,7 @@ services:
     container_name: atlas-postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD en .env (ver .env.example)}
       POSTGRES_DB: ${POSTGRES_DB:-atlas}
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
@@ -30,16 +30,14 @@ services:
     hostname: atlas-api
     environment:
       - PORT=4000
-      - DATABASE_URL=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@atlas-postgres:5432/${POSTGRES_DB:-atlas}
+      - DATABASE_URL=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD en .env (ver .env.example)}@atlas-postgres:5432/${POSTGRES_DB:-atlas}
       - NODE_ENV=${NODE_ENV:-production}
-      - JWT_SECRET=${JWT_SECRET:-your-secret-key-change-in-production}
+      - JWT_SECRET=${JWT_SECRET:?Defina JWT_SECRET en .env (ver .env.example)}
     ports:
       - "${PORT_BACKEND:-4450}:4000"
     depends_on:
       atlas-postgres:
         condition: service_healthy
-    volumes:
-      - ./BACKEND/uploads:/app/uploads
     networks:
       - atlas-network
     restart: unless-stopped
@@ -53,7 +51,7 @@ services:
     container_name: atlas-frontend
     hostname: atlas-web
     ports:
-      - "${PORT_FRONTEND:-3350}:80"
+      - "${PORT_FRONTEND:-3350}:8080"
     depends_on:
       - atlas-backend
     networks:

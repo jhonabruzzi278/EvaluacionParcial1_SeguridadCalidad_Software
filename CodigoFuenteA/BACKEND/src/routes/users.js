@@ -1,30 +1,21 @@
 const express = require("express");
 const { pool } = require("../db");
-const jwt = require("jsonwebtoken");
+const { getUserFromAuthHeader } = require("../middleware/auth");
+const { validarPolitica, hashPassword } = require("../middleware/password");
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || "inseguro";
-
-function getUserFromAuthHeader(req) {
-  const auth = req.headers.authorization || "";
-  if (!auth.startsWith("Bearer ")) return null;
-  try {
-    const token = auth.substring(7);
-    const decoded = jwt.verify(token, JWT_SECRET);
-    return decoded;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-}
 
 // Crear usuario
 router.post("/", async (req, res) => {
   const { nombre_usuario, contrasena_hash, correo } = req.body;
   try {
+    const errorPolitica = validarPolitica(contrasena_hash);
+    if (errorPolitica) {
+      return res.status(400).json({ error: "Contraseña inválida", glosa: errorPolitica });
+    }
     const result = await pool.query(
       "INSERT INTO usuarios (nombre_usuario, contrasena_hash, correo) VALUES ($1, $2, $3) RETURNING id, nombre_usuario, correo, created_at",
-      [nombre_usuario, contrasena_hash, correo]
+      [nombre_usuario, await hashPassword(contrasena_hash), correo]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -74,8 +65,10 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT id, nombre_usuario, correo, created_at FROM usuarios WHERE id = $1",
-      [req.params.id]
+      `SELECT u.id, u.nombre_usuario, u.correo, u.created_at FROM usuarios u
+       WHERE u.id = $1 AND EXISTS (
+         SELECT 1 FROM empresa_usuarios eu WHERE eu.usuario_id = u.id AND eu.empresa_id = $2)`,
+      [req.params.id, req.user.empresaId]
     );
     if (result.rows.length === 0)
       return res.status(404).json({ error: "No encontrado" });
@@ -93,9 +86,20 @@ router.get("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const { nombre_usuario, contrasena_hash, correo } = req.body;
   try {
+    let nuevoHash = null;
+    if (contrasena_hash !== undefined && contrasena_hash !== null && contrasena_hash !== "") {
+      const errorPolitica = validarPolitica(contrasena_hash);
+      if (errorPolitica) {
+        return res.status(400).json({ error: "Contraseña inválida", glosa: errorPolitica });
+      }
+      nuevoHash = await hashPassword(contrasena_hash);
+    }
     const result = await pool.query(
-      "UPDATE usuarios SET nombre_usuario=$1, contrasena_hash=$2, correo=$3 WHERE id=$4 RETURNING id, nombre_usuario, correo, created_at",
-      [nombre_usuario, contrasena_hash, correo, req.params.id]
+      `UPDATE usuarios SET nombre_usuario=$1, contrasena_hash=COALESCE($2, contrasena_hash), correo=$3
+       WHERE id=$4 AND EXISTS (
+         SELECT 1 FROM empresa_usuarios eu WHERE eu.usuario_id = usuarios.id AND eu.empresa_id = $5)
+       RETURNING id, nombre_usuario, correo, created_at`,
+      [nombre_usuario, nuevoHash, correo, req.params.id, req.user.empresaId]
     );
     if (result.rows.length === 0)
       return res.status(404).json({ error: "No encontrado" });
@@ -122,8 +126,16 @@ router.put("/:id", async (req, res) => {
 // Eliminar usuario
 router.delete("/:id", async (req, res) => {
   try {
+    // Solo se elimina un usuario vinculado a la empresa del token (primero sus vínculos).
+    const pertenece = await pool.query(
+      "SELECT 1 FROM empresa_usuarios WHERE usuario_id=$1 AND empresa_id=$2",
+      [req.params.id, req.user.empresaId]
+    );
+    if (pertenece.rows.length === 0)
+      return res.status(404).json({ error: "No encontrado" });
+    await pool.query("DELETE FROM empresa_usuarios WHERE usuario_id=$1", [req.params.id]);
     const result = await pool.query(
-      "DELETE FROM usuarios WHERE id=$1 RETURNING *",
+      "DELETE FROM usuarios WHERE id=$1 RETURNING id",
       [req.params.id]
     );
     if (result.rows.length === 0)

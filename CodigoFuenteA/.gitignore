@@ -1,2 +1,4 @@
 BACKEND/node_modules
 FRONTEND/node_modules
+# Salida de build
+dist/

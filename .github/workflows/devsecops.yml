@@ -1,0 +1,118 @@
+# Pipeline DevSecOps de Atlas — controles de seguridad y calidad automatizados (EP5/EP6 · IE3, IE5)
+# Cada job es un control; el comentario indica la norma o buena práctica que verifica.
+# Se ejecuta en cada push/pull request a main y manualmente (workflow_dispatch).
+name: devsecops-atlas
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  API: http://localhost:4450
+  WEB: http://localhost:3350
+
+jobs:
+  # 1 · Secretos en el código — OWASP A05/A07, CWE-798, Ley 19.628 art. 11 (deber de cuidado)
+  secretos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Gitleaks
+        run: |
+          docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:latest \
+            detect --source /repo/CodigoFuenteA --no-git --report-format json \
+            --report-path /repo/gitleaks.json --exit-code 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: gitleaks, path: gitleaks.json }
+
+  # 2 · SAST — OWASP Top 10, ISO/IEC 27001:2022 A.8.28 (codificación segura)
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Semgrep (reglas OWASP Top 10, Node.js y JWT)
+        run: |
+          docker run --rm -v "$PWD:/src" semgrep/semgrep semgrep \
+            --config p/owasp-top-ten --config p/nodejs --config p/jwt \
+            --json -o /src/semgrep.json --error --severity ERROR /src/CodigoFuenteA
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: semgrep, path: semgrep.json }
+      # SonarQube requiere un servidor: se ejecuta con 03-Anexos/Herramientas/sonarqube (ver README).
+
+  # 3 · SCA: dependencias e imagen — OWASP A06, ISO/IEC 27001 A.8.8 (vulnerabilidades técnicas)
+  sca:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trivy (dependencias y Dockerfiles)
+        run: |
+          docker run --rm -v "$PWD:/src" aquasec/trivy:latest fs \
+            --scanners vuln,misconfig --severity HIGH,CRITICAL \
+            --format json -o /src/trivy_fs.json --exit-code 1 /src/CodigoFuenteA
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: trivy, path: trivy_fs.json }
+
+  # 4 · Pruebas dinámicas sobre un entorno efímero — ISO/IEC 27001 A.8.29 (pruebas de seguridad)
+  dinamicas:
+    runs-on: ubuntu-latest
+    needs: [secretos, sast, sca]
+    if: always()          # se ejecuta aunque fallen los controles estáticos, para tener todos los resultados
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preparar copia de Atlas (lockfile y carpeta uploads; el original no se modifica)
+        run: |
+          cp -r CodigoFuenteA /tmp/atlas && mkdir -p /tmp/atlas/BACKEND/uploads
+          (cd /tmp/atlas/BACKEND && npm install --package-lock-only)
+          (cd /tmp/atlas/FRONTEND && [ -f package-lock.json ] || npm install --package-lock-only)
+      - name: Levantar Atlas (Docker Compose)
+        run: |
+          # Secretos efímeros de esta corrida (el compose no trae valores por defecto)
+          printf 'JWT_SECRET=%s\nPOSTGRES_PASSWORD=%s\n' "$(openssl rand -hex 32)" "$(openssl rand -hex 16)" > /tmp/atlas/.env
+          cd /tmp/atlas && docker compose up --build -d
+          for i in $(seq 1 60); do curl -sf $API/ && break; sleep 2; done
+
+      # 4a · Casos funcionales y de seguridad por API — Ley 19.628 art. 11, OWASP A01/A02/A07, RB-2, RB-4
+      - name: Suite API (ejecutar_api.py)
+        run: python3 03-Anexos/Herramientas/ejecucion/ejecutar_api.py
+
+      # 4b · DAST pasivo — OWASP A05 (configuración insegura)
+      - name: OWASP ZAP baseline (frontend y API)
+        run: |
+          mkdir -p zap && chmod 777 zap
+          docker run --rm --network host -v "$PWD/zap:/zap/wrk" zaproxy/zap-stable \
+            zap-baseline.py -t $WEB -J zap_frontend.json -r zap_frontend.html -I
+          docker run --rm --network host -v "$PWD/zap:/zap/wrk" zaproxy/zap-stable \
+            zap-baseline.py -t $API -J zap_api.json -r zap_api.html -I
+
+      # 4c · Rendimiento con umbrales — ISO/IEC 25010 eficiencia, NFR-PERF-1 (p95 < 300 ms)
+      - name: k6 (latencia CRUD)
+        continue-on-error: true   # el resultado lo evalúa el gate final
+        run: |
+          docker run --rm --network host -v "$PWD/03-Anexos/Herramientas/k6:/k6" grafana/k6 \
+            run -e API=$API --summary-export /k6/k6_summary.json /k6/crud_latencia.js
+
+      - name: Consolidar resultados
+        if: always()
+        run: python3 03-Anexos/Herramientas/ejecucion/consolidar.py
+
+      # 5 · Gate de liberación — no se libera con incidentes críticos (criterio de salida del plan)
+      - name: Gate de calidad y seguridad
+        run: python3 automatizacion/gate.py 06-Evidencias/ejecucion/resultados_ejecucion.json
+
+      # 6 · Evidencia trazable — Ley 21.719 (responsabilidad), ISO/IEC 27001 A.8.15 (registros)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidencias-ejecucion
+          path: |
+            06-Evidencias/ejecucion/
+            zap/
+            03-Anexos/Herramientas/k6/k6_summary.json
+          retention-days: 90

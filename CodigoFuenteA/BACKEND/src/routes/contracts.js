@@ -2,28 +2,16 @@ const path = require("path");
 const fs = require("fs");
 const express = require("express");
 const multer = require("multer");
-const jwt = require("jsonwebtoken");
 const { pool } = require("../db");
+const { getUserFromAuthHeader } = require("../middleware/auth");
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || "inseguro";
 
 // Función helper para simular latencia
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
-
-function getUserFromAuthHeader(req) {
-  const auth = req.headers.authorization || "";
-  if (!auth.startsWith("Bearer ")) return null;
-  try {
-    const token = auth.substring(7);
-    return jwt.verify(token, JWT_SECRET);
-  } catch {
-    return null;
-  }
-}
 
 // Crear contrato con archivo PDF (guardado en DB como bytea)
 router.post("/", upload.single("file"), async (req, res) => {
@@ -36,6 +24,14 @@ router.post("/", upload.single("file"), async (req, res) => {
   } = req.body;
   try {
     const clientIdNum = Number(cliente_id);
+    // El cliente debe pertenecer a la empresa del token (RB-2).
+    const clienteValido = await pool.query(
+      "SELECT 1 FROM clientes WHERE id=$1 AND empresa_id=$2",
+      [clientIdNum, req.user.empresaId]
+    );
+    if (clienteValido.rows.length === 0) {
+      return res.status(404).json({ error: "Cliente no encontrado" });
+    }
     const contractInsert = await pool.query(
       "INSERT INTO contratos (cliente_id, titulo, descripcion, fecha_inicio, fecha_fin) VALUES ($1, $2, $3, $4, $5) RETURNING *",
       [clientIdNum, titulo, descripcion, fecha_inicio, fecha_fin]
@@ -275,8 +271,10 @@ router.get("/dashboard", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT id, cliente_id, titulo, descripcion, fecha_inicio, fecha_fin, created_at FROM contratos WHERE id=$1",
-      [req.params.id]
+      `SELECT c.id, c.cliente_id, c.titulo, c.descripcion, c.fecha_inicio, c.fecha_fin, c.created_at
+       FROM contratos c INNER JOIN clientes cl ON cl.id = c.cliente_id
+       WHERE c.id=$1 AND cl.empresa_id=$2`,
+      [req.params.id, req.user.empresaId]
     );
     if (result.rows.length === 0)
       return res.status(404).json({ error: "No encontrado" });
@@ -331,6 +329,13 @@ router.put("/:id", upload.single("file"), async (req, res) => {
     let paramIndex = 1;
 
     if (cliente_id !== undefined) {
+      const clienteValido = await pool.query(
+        "SELECT 1 FROM clientes WHERE id=$1 AND empresa_id=$2",
+        [Number(cliente_id), empresaId]
+      );
+      if (clienteValido.rows.length === 0) {
+        return res.status(404).json({ error: "Cliente no encontrado" });
+      }
       updates.push(`cliente_id = $${paramIndex}`);
       values.push(Number(cliente_id));
       paramIndex++;
@@ -413,8 +418,11 @@ router.put("/:id", upload.single("file"), async (req, res) => {
 router.get("/:id/file", async (req, res) => {
   try {
     const doc = await pool.query(
-      "SELECT document FROM documentos_contrato WHERE contract_id=$1 ORDER BY id DESC LIMIT 1",
-      [req.params.id]
+      `SELECT d.document FROM documentos_contrato d
+       INNER JOIN contratos c ON c.id = d.contract_id
+       INNER JOIN clientes cl ON cl.id = c.cliente_id
+       WHERE d.contract_id=$1 AND cl.empresa_id=$2 ORDER BY d.id DESC LIMIT 1`,
+      [req.params.id, req.user.empresaId]
     );
     if (doc.rows.length === 0)
       return res.status(404).json({ error: "Documento no encontrado" });
@@ -434,6 +442,13 @@ router.get("/:id/file", async (req, res) => {
 // Eliminar contrato y su archivo
 router.delete("/:id", async (req, res) => {
   try {
+    const propio = await pool.query(
+      `SELECT 1 FROM contratos c INNER JOIN clientes cl ON cl.id = c.cliente_id
+       WHERE c.id=$1 AND cl.empresa_id=$2`,
+      [req.params.id, req.user.empresaId]
+    );
+    if (propio.rows.length === 0)
+      return res.status(404).json({ error: "No encontrado" });
     await pool.query("DELETE FROM documentos_contrato WHERE contract_id=$1", [
       req.params.id,
     ]);
@@ -441,8 +456,6 @@ router.delete("/:id", async (req, res) => {
       "DELETE FROM contratos WHERE id=$1 RETURNING *",
       [req.params.id]
     );
-    if (result.rows.length === 0)
-      return res.status(404).json({ error: "No encontrado" });
 
     const authUser = getUserFromAuthHeader(req);
     await pool.query(

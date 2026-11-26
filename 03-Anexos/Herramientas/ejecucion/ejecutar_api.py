@@ -620,7 +620,8 @@ def seg008():
     env = sh('sg docker -c "docker exec atlas-backend printenv JWT_SECRET"')
     L.log(f'1) JWT_SECRET efectivo en el contenedor del backend: "{env}"')
     L.chk('El secreto JWT es robusto y no es un valor por defecto público', env not in ('your-secret-key-change-in-production', 'inseguro', ''), f'valor: {env}')
-    forjado = forge({**pl, 'iat': now, 'exp': now + 3600}, env or 'inseguro')
+    # El atacante no conoce el secreto real: firma con el valor por defecto publicado en el docker-compose.
+    forjado = forge({**pl, 'iat': now, 'exp': now + 3600}, 'your-secret-key-change-in-production')
     s, _, b, ms = http('GET', '/clientes', token=forjado)
     L.req_('GET', '/clientes', s, ms, '(token forjado con el secreto por defecto del docker-compose)')
     L.chk('Un token firmado con el secreto por defecto es rechazado', s == 401, f'HTTP {s}')
@@ -655,6 +656,11 @@ def seg009():
             s, _, b, ms = http(m, p, bd, t)
         quien = 'empresa B' if t else 'sin token'
         ok = 200 <= s < 300
+        if ok and p == '/auditoria':
+            # Listar el propio registro de auditoría es legítimo; es fuga si trae acciones de otros usuarios.
+            propio = jwt_payload(t).get('nombreUsuario') if t else None
+            filas = jl(b) if isinstance(jl(b), list) else []
+            ok = any(a.get('usuario_id') != propio for a in filas)
         accesibles += ok
         L.req_(m, p, s, ms, f'[{quien}] {"ACCESIBLE " if ok else ""}{b.decode(errors="replace")[:60]!r}')
     n_int = db(f"select count(*) from contratos where titulo='Contrato intruso {SUF}'")

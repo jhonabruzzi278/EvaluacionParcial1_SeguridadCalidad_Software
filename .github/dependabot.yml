@@ -1,0 +1,20 @@
+# Actualizaciones automáticas de dependencias (SCA continuo) — OWASP A06, ISO/IEC 27001 A.8.8
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /CodigoFuenteA/BACKEND
+    schedule: { interval: weekly }
+    open-pull-requests-limit: 5
+  - package-ecosystem: npm
+    directory: /CodigoFuenteA/FRONTEND
+    schedule: { interval: weekly }
+    open-pull-requests-limit: 5
+  - package-ecosystem: docker
+    directory: /CodigoFuenteA/BACKEND
+    schedule: { interval: monthly }
+  - package-ecosystem: docker
+    directory: /CodigoFuenteA/FRONTEND
+    schedule: { interval: monthly }
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: monthly }

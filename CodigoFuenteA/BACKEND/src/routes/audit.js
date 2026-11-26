@@ -1,20 +1,8 @@
 const express = require("express");
 const { pool } = require("../db");
-const jwt = require("jsonwebtoken");
+const { getUserFromAuthHeader } = require("../middleware/auth");
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || "inseguro";
-
-function getUserFromAuthHeader(req) {
-  const auth = req.headers.authorization || "";
-  if (!auth.startsWith("Bearer ")) return null;
-  try {
-    const token = auth.substring(7);
-    return jwt.verify(token, JWT_SECRET);
-  } catch {
-    return null;
-  }
-}
 
 // Registrar log manualmente
 router.post("/", async (req, res) => {
@@ -36,7 +24,16 @@ router.post("/", async (req, res) => {
 // Listar logs
 router.get("/", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM auditoria ORDER BY id DESC");
+    // Solo acciones de usuarios de la empresa del token (RB-2).
+    const result = await pool.query(
+      `SELECT a.* FROM auditoria a
+       WHERE a.usuario_id IN (
+         SELECT u.nombre_usuario FROM usuarios u
+         JOIN empresa_usuarios eu ON eu.usuario_id = u.id
+         WHERE eu.empresa_id = $1)
+       ORDER BY a.id DESC`,
+      [req.user.empresaId]
+    );
     res.json(result.rows);
   } catch (err) {
     console.error(err);

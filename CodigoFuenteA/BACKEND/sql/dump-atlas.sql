@@ -341,8 +341,8 @@ ALTER TABLE public.usuarios ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
 
 INSERT INTO public.roles OVERRIDING SYSTEM VALUE VALUES (1, 'administrador');
 INSERT INTO public.roles OVERRIDING SYSTEM VALUE VALUES (2, 'editor');
-INSERT INTO public.usuarios OVERRIDING SYSTEM VALUE VALUES (1, 'admin', 'admin', 'admin@atlasfake.com');
-INSERT INTO public.usuarios OVERRIDING SYSTEM VALUE VALUES (2, 'editor', 'editor', 'editor@atlasfake.com');
+INSERT INTO public.usuarios OVERRIDING SYSTEM VALUE VALUES (1, 'admin', '$2b$12$YNMKtw.P6xX7R47cF9WB1eZt93A5tSgDqr6jYeQqswBjlk/7iR5pe', 'admin@atlasfake.com');
+INSERT INTO public.usuarios OVERRIDING SYSTEM VALUE VALUES (2, 'editor', '$2b$12$V1jBx4rI6p0/LIqTZxXRc.AniLjkiqi8nscBFamQL16PW899ZfjEy', 'editor@atlasfake.com');
 INSERT INTO public.empresas OVERRIDING SYSTEM VALUE VALUES (1, 'Altavia', 'Avenida Macul 4660, Macul, Santiago', '1234567890', 'altavia@atlasfake.com');
 INSERT INTO public.clientes OVERRIDING SYSTEM VALUE VALUES (1,'María González','maria.gonzalez@biotec.cl',
   '987654321','Av. Providencia 1234, Providencia, Santiago',true,'17654321-9','Biotec Solutions','Servicios Tecnológicos','Carlos Rojas','Gerente General','carlos.rojas@biotec.cl','912345678','Representante Legal','Av. Providencia','1234','Providencia','Region Metropolitana','https://www.biotec.cl','912345678','Banco Santander','9876543210','Biotec Solutions SpA','transferencia','5','CLP',1);
