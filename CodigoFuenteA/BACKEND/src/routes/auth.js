@@ -1,54 +1,56 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const { pool } = require("../db");
+const { signToken } = require("../middleware/auth");
+const bcrypt = require("bcryptjs");
+const { compararPassword, esHashBcrypt } = require("../middleware/password");
 
 const router = express.Router();
-
-const JWT_SECRET = process.env.JWT_SECRET || "inseguro";
 
 // Función helper para simular latencia
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Login simple: usuario + contraseña en texto plano
+// Hash ficticio para igualar el tiempo de respuesta cuando el usuario no existe (evita enumeración).
+const HASH_FICTICIO = bcrypt.hashSync("hash-ficticio-sin-uso", 12);
+
+// Login: usuario + contraseña verificada contra el hash bcrypt
 router.post("/login", async (req, res) => {
-  const { nombre_usuario, password } = req.body;
+  const { nombre_usuario, password } = req.body || {};
   try {
     // Simular latencia de 4 segundos
     await delay(4000);
+    if (typeof nombre_usuario !== "string" || typeof password !== "string") {
+      return res.status(400).json({ error: "Credenciales inválidas" });
+    }
     const result = await pool.query(
       "SELECT id, nombre_usuario, contrasena_hash FROM usuarios WHERE nombre_usuario = $1",
       [nombre_usuario]
     );
-    if (result.rows.length === 0) {
-      return res.status(401).json({ error: "Credenciales inválidas" });
-    }
     const user = result.rows[0];
-    if (user.contrasena_hash !== password) {
+    const hash = user && esHashBcrypt(user.contrasena_hash) ? user.contrasena_hash : HASH_FICTICIO;
+    const coincide = await compararPassword(password, hash);
+    if (!user || !coincide) {
       return res.status(401).json({ error: "Credenciales inválidas" });
     }
 
-    // Obtener el empresa_usuario id y empresa_id más reciente para este usuario
-    const empresaUsuarioResult = await pool.query(
-      "SELECT id, empresa_id FROM empresa_usuarios WHERE usuario_id = $1 ORDER BY id DESC LIMIT 1",
+    // Vínculo más reciente del usuario con una empresa, y su rol
+    const vinculo = await pool.query(
+      `SELECT eu.id, eu.empresa_id, eu.rol_id, r.nombre AS rol
+       FROM empresa_usuarios eu
+       LEFT JOIN roles r ON r.id = eu.rol_id
+       WHERE eu.usuario_id = $1
+       ORDER BY eu.id DESC LIMIT 1`,
       [user.id]
     );
-    const empresaUsuarioId = empresaUsuarioResult.rows.length > 0 
-      ? empresaUsuarioResult.rows[0].id 
-      : null;
-    const empresaId = empresaUsuarioResult.rows.length > 0 
-      ? empresaUsuarioResult.rows[0].empresa_id 
-      : null;
+    const v = vinculo.rows[0] || {};
 
-    const token = jwt.sign(
-      { 
-        usuarioId: user.id, 
-        nombreUsuario: user.nombre_usuario,
-        empresaUsuarioId: empresaUsuarioId,
-        empresaId: empresaId
-      },
-      JWT_SECRET,
-      { expiresIn: "2h" }
-    );
+    const token = signToken({
+      usuarioId: user.id,
+      nombreUsuario: user.nombre_usuario,
+      empresaUsuarioId: v.id || null,
+      empresaId: v.empresa_id || null,
+      rolId: v.rol_id || null,
+      rol: v.rol || null,
+    });
 
     // Registrar en auditoría
     await pool.query(
@@ -59,9 +61,7 @@ router.post("/login", async (req, res) => {
     res.json({ token });
   } catch (err) {
     console.error(err);
-    res
-      .status(500)
-      .json({ error: "Error en login", glosa: err.message || err.toString() });
+    res.status(500).json({ error: "Error en login" });
   }
 });
 

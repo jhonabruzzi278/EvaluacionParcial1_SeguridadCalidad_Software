@@ -1,20 +1,9 @@
 const express = require("express");
 const { pool } = require("../db");
-const jwt = require("jsonwebtoken");
+const { getUserFromAuthHeader } = require("../middleware/auth");
+const { validarPolitica, hashPassword } = require("../middleware/password");
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || "inseguro";
-
-function getUserFromAuthHeader(req) {
-  const auth = req.headers.authorization || "";
-  if (!auth.startsWith("Bearer ")) return null;
-  try {
-    const token = auth.substring(7);
-    return jwt.verify(token, JWT_SECRET);
-  } catch {
-    return null;
-  }
-}
 
 // Crear relación empresa-usuario con rol (crea usuario si no existe)
 router.post("/", async (req, res) => {
@@ -39,10 +28,14 @@ router.post("/", async (req, res) => {
     if (usuario_id) {
       usuarioId = usuario_id;
     } else if (nombre_usuario && contrasena_hash && correo) {
+      const errorPolitica = validarPolitica(contrasena_hash);
+      if (errorPolitica) {
+        return res.status(400).json({ error: "Contraseña inválida", glosa: errorPolitica });
+      }
       // Crear usuario primero
       const usuarioResult = await pool.query(
         "INSERT INTO usuarios (nombre_usuario, contrasena_hash, correo) VALUES ($1, $2, $3) RETURNING id, nombre_usuario, correo, created_at",
-        [nombre_usuario, contrasena_hash, correo]
+        [nombre_usuario, await hashPassword(contrasena_hash), correo]
       );
       usuarioId = usuarioResult.rows[0].id;
     } else {
@@ -133,8 +126,8 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM empresa_usuarios WHERE id=$1",
-      [req.params.id]
+      "SELECT * FROM empresa_usuarios WHERE id=$1 AND empresa_id=$2",
+      [req.params.id, req.user.empresaId]
     );
     if (result.rows.length === 0)
       return res.status(404).json({ error: "No encontrado" });
@@ -150,11 +143,12 @@ router.get("/:id", async (req, res) => {
 
 // Actualizar vínculo
 router.put("/:id", async (req, res) => {
-  const { empresa_id, usuario_id, rol_id } = req.body;
+  // La empresa no se puede reasignar desde el cuerpo: siempre es la del token.
+  const { usuario_id, rol_id } = req.body;
   try {
     const result = await pool.query(
-      "UPDATE empresa_usuarios SET empresa_id=$1, usuario_id=$2, rol_id=$3 WHERE id=$4 RETURNING *",
-      [empresa_id, usuario_id, rol_id, req.params.id]
+      "UPDATE empresa_usuarios SET usuario_id=$1, rol_id=$2 WHERE id=$3 AND empresa_id=$4 RETURNING *",
+      [usuario_id, rol_id, req.params.id, req.user.empresaId]
     );
     if (result.rows.length === 0)
       return res.status(404).json({ error: "No encontrado" });
@@ -182,8 +176,8 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const result = await pool.query(
-      "DELETE FROM empresa_usuarios WHERE id=$1 RETURNING *",
-      [req.params.id]
+      "DELETE FROM empresa_usuarios WHERE id=$1 AND empresa_id=$2 RETURNING *",
+      [req.params.id, req.user.empresaId]
     );
     if (result.rows.length === 0)
       return res.status(404).json({ error: "No encontrado" });

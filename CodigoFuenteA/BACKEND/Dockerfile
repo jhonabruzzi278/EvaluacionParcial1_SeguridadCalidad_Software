@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 
@@ -13,8 +13,11 @@ COPY src/ ./src/
 COPY sql/ ./sql/
 COPY uploads/ ./uploads/
 
-# Crear directorio para uploads si no existe
-RUN mkdir -p uploads/contracts
+# Crear directorio para uploads y ceder todo al usuario sin privilegios
+RUN mkdir -p uploads/contracts && chown -R node:node /app
+
+# No ejecutar como root (CIS Docker 4.1, Trivy DS-0002)
+USER node
 
 # Exponer puerto
 EXPOSE 4000

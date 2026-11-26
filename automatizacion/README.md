@@ -53,3 +53,9 @@ Pendiente de configurar en GitHub: variable `VITE_API_URL` (Settings → Variabl
 y permisos de Actions en modo lectura/escritura de paquetes. El despliegue a un servidor no está incluido
 (no hay destino definido). Ojo: la publicación no espera al gate de `devsecops.yml`, que rechaza mientras
 existan los 4 críticos intencionales.
+
+## Secretos y rama corregida
+El `docker-compose.yml` ya **no trae secretos por defecto**: exige `JWT_SECRET` y `POSTGRES_PASSWORD`.
+En local copie `CodigoFuenteA/.env.example` a `.env` y complete ambos (`openssl rand -hex 32`).
+Los workflows generan secretos efímeros en cada corrida. La rama `ci-cd/pipeline-corregido` corrige los 4 críticos
+(INC-01 a INC-04) y los hallazgos de Gitleaks, Semgrep y Trivy; `ci-cd/pipeline` conserva la versión con los hallazgos.

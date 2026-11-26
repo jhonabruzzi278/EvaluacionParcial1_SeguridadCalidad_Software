@@ -1,20 +1,17 @@
 const express = require("express");
 const { pool } = require("../db");
-const jwt = require("jsonwebtoken");
+const { getUserFromAuthHeader } = require("../middleware/auth");
+const { validarPolitica, hashPassword } = require("../middleware/password");
+
+// Solo se puede ver o modificar la propia empresa (token), nunca la de otra (RB-2).
+function soloPropiaEmpresa(req, res, next) {
+  if (String(req.params.id) !== String(req.user.empresaId)) {
+    return res.status(404).json({ error: "No encontrado" });
+  }
+  next();
+}
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || "inseguro";
-
-function getUserFromAuthHeader(req) {
-  const auth = req.headers.authorization || "";
-  if (!auth.startsWith("Bearer ")) return null;
-  try {
-    const token = auth.substring(7);
-    return jwt.verify(token, JWT_SECRET);
-  } catch {
-    return null;
-  }
-}
 
 // Crear empresa (con usuario y relación)
 router.post("/", async (req, res) => {
@@ -25,10 +22,14 @@ router.post("/", async (req, res) => {
     const { nombre, direccion = null, telefono = null, correo } = empresa;
 
     try {
+      const errorPolitica = validarPolitica(contrasena_hash);
+      if (errorPolitica) {
+        return res.status(400).json({ error: "Contraseña inválida", glosa: errorPolitica });
+      }
       // 1. Crear usuario
       const usuarioResult = await pool.query(
         "INSERT INTO usuarios (nombre_usuario, contrasena_hash, correo) VALUES ($1, $2, $3) RETURNING id, nombre_usuario, correo, created_at",
-        [nombre_usuario, contrasena_hash, correoUsuario]
+        [nombre_usuario, await hashPassword(contrasena_hash), correoUsuario]
       );
       const usuarioId = usuarioResult.rows[0].id;
 
@@ -92,7 +93,7 @@ router.post("/", async (req, res) => {
 // Listar empresas
 router.get("/", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM empresas ORDER BY id DESC");
+    const result = await pool.query("SELECT * FROM empresas WHERE id=$1", [req.user.empresaId]);
     res.json(result.rows);
   } catch (err) {
     console.error(err);
@@ -106,7 +107,7 @@ router.get("/", async (req, res) => {
 });
 
 // Obtener empresa por id
-router.get("/:id", async (req, res) => {
+router.get("/:id", soloPropiaEmpresa, async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM empresas WHERE id=$1", [
       req.params.id,
@@ -126,7 +127,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Actualizar empresa
-router.put("/:id", async (req, res) => {
+router.put("/:id", soloPropiaEmpresa, async (req, res) => {
   const { nombre, direccion = null, telefono = null, correo } = req.body;
   try {
     const result = await pool.query(
@@ -158,7 +159,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // Eliminar empresa
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", soloPropiaEmpresa, async (req, res) => {
   try {
     const result = await pool.query(
       "DELETE FROM empresas WHERE id=$1 RETURNING *",

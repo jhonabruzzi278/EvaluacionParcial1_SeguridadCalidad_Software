@@ -27,7 +27,8 @@ root
 ```
 En el archivo `.env` se definen las variables de entorno que utilizará docker al momento de crear las imágenes, por lo que puedes modificarlas en el caso de tener otros servicios corriendo en tu equipo que utilicen los mismos puertos.
 
-1. JWT_SECRET: `0d1d8132f0fde5beabb417b434ff10f1cae8635a461686b0f46ac9c2bbfbd0e8` Llave utilizada para cifrar y generar los tokens de sesión
+1. JWT_SECRET: llave para firmar los tokens de sesión. **Obligatoria**, mínimo 32 caracteres y distinta en cada entorno; genérela con `openssl rand -hex 32`. No se publica en el repositorio.
+   POSTGRES_PASSWORD: contraseña de la base de datos, también obligatoria. Copie `.env.example` a `.env` y complete ambos valores.
 2. PORT_POSTGRES: `15432` Puerto expuesto que utilizará tu equipo para permitir acceder a la conexión a la base de datos
 3. PORT_BACKEND: `4450` Puerto expuesto que utilizará tu equipo para acceder a la API
 4. PORT_FRONTEND: `3350` Puerto expuesto que utilizará tu equipo para acceder al cliente - frontend

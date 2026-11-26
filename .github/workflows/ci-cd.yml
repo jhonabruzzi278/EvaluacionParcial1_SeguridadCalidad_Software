@@ -132,7 +132,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Levantar Atlas
         run: |
-          mkdir -p CodigoFuenteA/BACKEND/uploads
+          # Secretos efímeros de esta corrida (el compose no trae valores por defecto)
+          printf 'JWT_SECRET=%s\nPOSTGRES_PASSWORD=%s\n' "$(openssl rand -hex 32)" "$(openssl rand -hex 16)" > CodigoFuenteA/.env
           docker compose -f CodigoFuenteA/docker-compose.yml up --build -d
       - name: Esperar a la API y al frontend
         run: |

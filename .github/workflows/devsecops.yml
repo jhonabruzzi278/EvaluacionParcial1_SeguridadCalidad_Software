@@ -73,6 +73,8 @@ jobs:
           (cd /tmp/atlas/FRONTEND && [ -f package-lock.json ] || npm install --package-lock-only)
       - name: Levantar Atlas (Docker Compose)
         run: |
+          # Secretos efímeros de esta corrida (el compose no trae valores por defecto)
+          printf 'JWT_SECRET=%s\nPOSTGRES_PASSWORD=%s\n' "$(openssl rand -hex 32)" "$(openssl rand -hex 16)" > /tmp/atlas/.env
           cd /tmp/atlas && docker compose up --build -d
           for i in $(seq 1 60); do curl -sf $API/ && break; sleep 2; done
 
